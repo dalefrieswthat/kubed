@@ -1,0 +1,5 @@
+include README.md
+include requirements.txt
+recursive-include kubed/aliases *
+recursive-include kubed/completions/bash *
+recursive-include kubed/completions/zsh * 

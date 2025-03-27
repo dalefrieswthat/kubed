@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=77.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kubed"
+version = "1.3.0"
+dynamic = ["license"]
+description = "CLI productivity tool with autocompletion for Docker, Terraform, Helm, and Kubernetes"
+readme = "README.md"
+authors = [
+    {name = "Dale Yarborough", email = "info@daleyarborough.com"}
+]
+requires-python = ">=3.6"
+dependencies = [
+    "click>=7.0",
+    "requests",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Systems Administration",
+]
+
+[project.urls]
+Homepage = "https://daleyarborough.com"
+
+[project.scripts]
+kubed-setup = "kubed.cli:setup_command"
+kubed-completions-path = "kubed.cli:completions_path_command"
+kubed-aliases-path = "kubed.cli:aliases_path_command"
+
+[tool.setuptools]
+packages = ["kubed", "kubed.aliases", "kubed.completions.bash", "kubed.completions.zsh"]
+include-package-data = true 
