@@ -84,107 +84,83 @@ done
         f.write(help_wrapper)
 
 def check_and_install_tools():
-    """Check for required tools and offer to install missing ones."""
-    required_tools = {
+    """Check for required tools and install if missing."""
+    tools = {
         'docker': {
             'check': 'docker --version',
-            'install': {
-                'macos': 'brew install docker',
-                'ubuntu': 'sudo apt-get update && sudo apt-get install -y docker.io',
-                'centos': 'sudo yum install -y docker',
-                'pip': 'pip3 install docker'
-            }
-        },
-        'helm': {
-            'check': 'helm version',
-            'install': {
-                'macos': 'brew install helm',
-                'ubuntu': 'curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list && sudo apt-get update && sudo apt-get install -y helm',
-                'centos': 'curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null && echo "[helm-stable-debian]\nname=Helm stable\nbaseurl=https://baltocdn.com/helm/stable/debian/\ngpgcheck=1\ngpgkey=/usr/share/keyrings/helm.gpg" | sudo tee /etc/yum.repos.d/helm-stable-debian.repo && sudo yum install -y helm',
-                'pip': 'pip3 install helm'
-            }
-        },
-        'terraform': {
-            'check': 'terraform --version',
-            'install': {
-                'macos': 'brew install terraform',
-                'ubuntu': 'wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg && echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list && sudo apt-get update && sudo apt-get install -y terraform',
-                'centos': 'sudo yum install -y yum-utils && sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo && sudo yum install -y terraform'
-            }
+            'install': 'brew install docker',
+            'install_msg': 'Docker is not installed. Would you like to install it? [Y/n]: ',
+            'install_cmd': 'brew install docker',
+            'alt_install': 'curl -fsSL https://get.docker.com -o get-docker.sh && sudo sh get-docker.sh'
         },
         'kubectl': {
             'check': 'kubectl version --client',
-            'install': {
-                'macos': 'brew install kubectl',
-                'ubuntu': 'sudo apt-get update && sudo apt-get install -y apt-transport-https ca-certificates curl && curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-archive-keyring.gpg && echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list && sudo apt-get update && sudo apt-get install -y kubectl',
-                'centos': r'cat <<EOF > /etc/yum.repos.d/kubernetes.repo\n[kubernetes]\nname=Kubernetes\nbaseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg\nEOF\nsudo yum install -y kubectl',
-                'pip': 'pip3 install kubectl'
-            }
+            'install': 'brew install kubectl',
+            'install_msg': 'kubectl is not installed. Would you like to install it? [Y/n]: ',
+            'install_cmd': 'brew install kubectl',
+            'alt_install': 'curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/darwin/amd64/kubectl" && chmod +x kubectl && sudo mv kubectl /usr/local/bin/'
+        },
+        'helm': {
+            'check': 'helm version',
+            'install': 'brew install helm',
+            'install_msg': 'Helm is not installed. Would you like to install it? [Y/n]: ',
+            'install_cmd': 'brew install helm',
+            'alt_install': 'curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash'
+        },
+        'terraform': {
+            'check': 'terraform --version',
+            'install': 'brew install terraform',
+            'install_msg': 'Terraform is not installed. Would you like to install it? [Y/n]: ',
+            'install_cmd': 'curl -fsSL https://releases.hashicorp.com/terraform/1.7.5/terraform_1.7.5_darwin_amd64.zip -o terraform.zip && unzip terraform.zip && sudo mv terraform /usr/local/bin/ && rm terraform.zip',
+            'alt_install': 'curl -fsSL https://releases.hashicorp.com/terraform/1.7.5/terraform_1.7.5_darwin_amd64.zip -o terraform.zip && unzip terraform.zip && sudo mv terraform /usr/local/bin/ && rm terraform.zip'
         }
     }
 
-    # Detect OS and package manager
-    if sys.platform == 'darwin':
-        os_type = 'macos'
-        # Check if brew is installed
-        if not subprocess.run('which brew', shell=True, capture_output=True).returncode == 0:
-            click.echo("Homebrew is not installed. Checking for pip/pip3...")
-            if subprocess.run('which pip3', shell=True, capture_output=True).returncode == 0:
-                os_type = 'pip'
-            else:
-                click.echo("Neither Homebrew nor pip3 is installed. Please install one of them first.")
-                return False
-    elif os.path.exists('/etc/debian_version'):
-        os_type = 'ubuntu'
-        # Check if apt is available
-        if not subprocess.run('which apt-get', shell=True, capture_output=True).returncode == 0:
-            click.echo("apt-get is not available. Checking for pip/pip3...")
-            if subprocess.run('which pip3', shell=True, capture_output=True).returncode == 0:
-                os_type = 'pip'
-            else:
-                click.echo("Neither apt-get nor pip3 is available. Please install one of them first.")
-                return False
-    elif os.path.exists('/etc/redhat-release'):
-        os_type = 'centos'
-        # Check if yum is available
-        if not subprocess.run('which yum', shell=True, capture_output=True).returncode == 0:
-            click.echo("yum is not available. Checking for pip/pip3...")
-            if subprocess.run('which pip3', shell=True, capture_output=True).returncode == 0:
-                os_type = 'pip'
-            else:
-                click.echo("Neither yum nor pip3 is available. Please install one of them first.")
-                return False
-    else:
-        # For unknown OS, try pip3
-        if subprocess.run('which pip3', shell=True, capture_output=True).returncode == 0:
-            os_type = 'pip'
-        else:
-            click.echo("Unsupported operating system and pip3 is not installed. Please install pip3 first.")
-            return False
+    def check_homebrew():
+        """Check if Homebrew is installed and working."""
+        return subprocess.run('which brew', shell=True, capture_output=True).returncode == 0
 
-    missing_tools = []
-    for tool, config in required_tools.items():
+    # Initial Homebrew check and installation attempt
+    homebrew_available = check_homebrew()
+    if not homebrew_available:
+        print("\nHomebrew is not installed. Some tools may require Homebrew for installation.")
+        print("Would you like to install Homebrew? [Y/n]: ")
+        response = input().lower()
+        if response in ['y', 'yes', '']:
+            print("Installing Homebrew...")
+            try:
+                subprocess.run('/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"', shell=True, check=True)
+                print("✅ Homebrew installed successfully!")
+                homebrew_available = check_homebrew()
+            except subprocess.CalledProcessError as e:
+                print(f"❌ Failed to install Homebrew: {e}")
+                print("Proceeding with alternative installation methods...")
+
+    for tool, config in tools.items():
         try:
             subprocess.run(config['check'], shell=True, check=True, capture_output=True)
         except subprocess.CalledProcessError:
-            missing_tools.append(tool)
+            print(f"\n{config['install_msg']}")
+            response = input().lower()
+            if response in ['y', 'yes', '']:
+                print(f"Installing {tool}...")
+                # Check Homebrew availability again before each tool installation
+                homebrew_available = check_homebrew()
+                if homebrew_available:
+                    try:
+                        subprocess.run(config['install_cmd'], shell=True, check=True)
+                        print(f"✅ {tool} installed successfully!")
+                        continue
+                    except subprocess.CalledProcessError:
+                        print(f"Failed to install {tool} using Homebrew. Trying alternative method...")
 
-    if missing_tools:
-        click.echo("Installing missing tools:")
-        for tool in missing_tools:
-            try:
-                # Skip pip installation for terraform since it's not available
-                if tool == 'terraform' and os_type == 'pip':
-                    click.echo("Terraform cannot be installed via pip. Please install it using your system package manager.")
-                    continue
-                    
-                install_cmd = required_tools[tool]['install'][os_type]
-                click.echo(f"Installing {tool} using {os_type}...")
-                subprocess.run(install_cmd, shell=True, check=True)
-                click.echo(f"Successfully installed {tool}")
-            except subprocess.CalledProcessError:
-                click.echo(f"Failed to install {tool}. Please install it manually.")
-                return False
+                try:
+                    subprocess.run(config['alt_install'], shell=True, check=True)
+                    print(f"✅ {tool} installed successfully using alternative method!")
+                except subprocess.CalledProcessError as e:
+                    print(f"❌ Failed to install {tool}: {e}")
+            else:
+                print(f"Skipping {tool} installation.")
 
     return True
 
@@ -380,8 +356,12 @@ def setup_command():
     
     # Source the aliases
     click.echo("Sourcing aliases...")
-    subprocess.run(f"source {os.path.join(os.path.dirname(__file__), 'aliases', 'aliases.sh')}", shell=True)
-    click.echo("Setup completed! You may need to restart your terminal for all changes to take effect.")
+    try:
+        subprocess.run(f"source {os.path.join(os.path.dirname(__file__), 'aliases', 'aliases.sh')}", shell=True, check=True)
+        click.echo("Setup completed! You may need to restart your terminal for all changes to take effect.")
+    except subprocess.CalledProcessError:
+        click.echo("Failed to source aliases. Please manually source them after restarting your terminal.")
+        click.echo(f"Source file: {os.path.join(os.path.dirname(__file__), 'aliases', 'aliases.sh')}")
 
 def generate_shell_setup_content():
     """Generate the shell setup content for .zshrc/.bashrc."""
