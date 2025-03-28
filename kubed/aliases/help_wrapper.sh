@@ -3,7 +3,7 @@ function _kubed_help_wrapper() {
     if [[ "$@" == *--help* ]] || [[ "$@" == *-h* ]]; then
         # Run the original command
         "$@"
-        echo -e "\n\033[1;32mℹ️  For more information, visit: https://daleyarborough.com\033[0m\n"
+        echo -e "\n\033[1;32mℹ️  For more information, visit: https://cmds.daleyarborough.com\033[0m\n"
     else
         # Just run the original command
         "$@"
