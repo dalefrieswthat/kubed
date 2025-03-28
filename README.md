@@ -57,4 +57,4 @@ Contributions are welcome! Please open an issue or submit a pull request for any
 
 ## Contact
 
-For more information, visit [Dale Yarborough's website](https://daleyarborough.com) or contact via email at info@daleyarborough.com. 
+For more information, visit [Dale Yarborough's website](https://cmds.daleyarborough.com) or contact via email at daleyarborough@gmail.com. 
