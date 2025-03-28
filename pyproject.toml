@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "kubed"
-version = "1.3.0"
+version = "2.0.0"
 dynamic = ["license"]
 description = "CLI productivity tool with autocompletion for Docker, Terraform, Helm, and Kubernetes"
 readme = "README.md"

@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="kubed",
-    version="1.3.0",
+    version="2.0.0",
     description="CLI productivity tool with autocompletion for Docker, Terraform, Helm, and Kubernetes",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
