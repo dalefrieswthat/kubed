@@ -1,7 +1,7 @@
 title: Kubed Documentation
 description: Documentation and cheat sheets for Docker, Kubernetes, Terraform, and Helm
-baseurl: ""
-url: "https://cmds.daleyarborough.com"
+baseurl: "/kubed"
+url: "https://dalefrieswthat.github.io"
 
 # Build settings
 markdown: kramdown
