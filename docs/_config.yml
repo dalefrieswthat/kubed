@@ -9,6 +9,12 @@ theme: minima
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
+  - jekyll-postcss
+
+# PostCSS config
+postcss:
+  enabled: true
+  config_path: ./postcss.config.js
 
 # Exclude from processing
 exclude:
@@ -17,6 +23,10 @@ exclude:
   - node_modules
   - vendor
   - .git/
+  - postcss.config.js
+  - package.json
+  - package-lock.json
+  - tailwind.config.js
 
 # Navigation
 nav_order: 1

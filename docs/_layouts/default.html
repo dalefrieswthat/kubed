@@ -3,47 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ page.title }} - {{ site.title }}</title>
-    <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-bash.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-yaml.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-json.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-docker.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-hcl.min.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
+    <meta name="description" content="{{ page.description | default: site.description }}">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/assets/css/style.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO tags -->
+    {% seo %}
 </head>
-<body>
-    <div class="container">
-        <header>
-            <nav>
-                <div class="nav-brand">
-                    <a href="{{ '/' | relative_url }}">{{ site.title }}</a>
+<body class="bg-gray-50 text-gray-800">
+    <header class="bg-white shadow-sm">
+        <nav class="container mx-auto flex items-center justify-between p-4">
+            <a href="/" class="text-2xl font-bold text-gray-900">
+                <span class="text-blue-600">K</span>ubed
+            </a>
+            <div class="hidden md:flex space-x-4">
+                <a href="/" class="nav-link {% if page.url == '/' %}active{% endif %}">Home</a>
+                <a href="/installation" class="nav-link {% if page.url == '/installation' %}active{% endif %}">Installation</a>
+                <a href="/docker" class="nav-link {% if page.url contains '/docker' %}active{% endif %}">Docker</a>
+                <a href="/kubernetes" class="nav-link {% if page.url contains '/kubernetes' %}active{% endif %}">Kubernetes</a>
+                <a href="/terraform" class="nav-link {% if page.url contains '/terraform' %}active{% endif %}">Terraform</a>
+                <a href="/helm" class="nav-link {% if page.url contains '/helm' %}active{% endif %}">Helm</a>
+            </div>
+            <button class="md:hidden focus:outline-none" id="menu-toggle">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </nav>
+        <div class="mobile-menu hidden md:hidden p-4 border-t border-gray-200" id="mobile-menu">
+            <a href="/" class="block py-2 hover:text-blue-600 {% if page.url == '/' %}text-blue-600{% endif %}">Home</a>
+            <a href="/installation" class="block py-2 hover:text-blue-600 {% if page.url == '/installation' %}text-blue-600{% endif %}">Installation</a>
+            <a href="/docker" class="block py-2 hover:text-blue-600 {% if page.url contains '/docker' %}text-blue-600{% endif %}">Docker</a>
+            <a href="/kubernetes" class="block py-2 hover:text-blue-600 {% if page.url contains '/kubernetes' %}text-blue-600{% endif %}">Kubernetes</a>
+            <a href="/terraform" class="block py-2 hover:text-blue-600 {% if page.url contains '/terraform' %}text-blue-600{% endif %}">Terraform</a>
+            <a href="/helm" class="block py-2 hover:text-blue-600 {% if page.url contains '/helm' %}text-blue-600{% endif %}">Helm</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto py-8 px-4">
+        {{ content }}
+    </main>
+
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between">
+                <div class="mb-8 md:mb-0">
+                    <h3 class="text-xl font-bold mb-4">Kubed</h3>
+                    <p class="text-gray-400 max-w-md">A CLI productivity tool with autocompletion for Docker, Kubernetes, Terraform, and Helm.</p>
                 </div>
-                <ul class="nav-links">
-                    <li><a href="{{ '/docker/' | relative_url }}">Docker</a></li>
-                    <li><a href="{{ '/kubernetes/' | relative_url }}">Kubernetes</a></li>
-                    <li><a href="{{ '/terraform/' | relative_url }}">Terraform</a></li>
-                    <li><a href="{{ '/helm/' | relative_url }}">Helm</a></li>
-                </ul>
-            </nav>
-        </header>
-
-        <main>
-            <div class="content">
-                <h1>{{ page.title }}</h1>
-                {{ content }}
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="https://github.com/dalefrieswthat/kubed" class="text-gray-400 hover:text-white transition-colors">GitHub</a></li>
+                        <li><a href="https://github.com/dalefrieswthat/kubed/issues" class="text-gray-400 hover:text-white transition-colors">Report Issues</a></li>
+                        <li><a href="mailto:daleyarborough@gmail.com" class="text-gray-400 hover:text-white transition-colors">Contact</a></li>
+                    </ul>
+                </div>
             </div>
-        </main>
-
-        <footer>
-            <div class="footer-bottom">
-                <p>&copy; {{ site.time | date: '%Y' }} {{ site.title }}. All rights reserved.</p>
-                <p class="github-link"><a href="https://github.com/dalefrieswthat/kubed">GitHub</a></p>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-500">
+                <p>© {{ site.time | date: '%Y' }} Dale Yarborough. All rights reserved.</p>
             </div>
-        </footer>
-    </div>
+        </div>
+    </footer>
 
-    <script src="{{ '/assets/js/main.js' | relative_url }}"></script>
+    <script>
+        // Mobile menu toggle
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+    </script>
 </body>
 </html> 
