@@ -329,6 +329,9 @@ def setup_command():
         click.echo(f"Could not locate configuration file for {shell}. Please manually set up Kubed.")
         return
     
+    # Flag to track if we should offer the source command
+    should_add_source_command = False
+    
     # Check if user wants enhanced completion support
     if shell == 'zsh':
         enhanced_completion = click.confirm(
@@ -345,23 +348,71 @@ def setup_command():
             if use_oh_my_zsh:
                 if setup_oh_my_zsh():
                     click.echo("oh-my-zsh and Powerlevel10k setup completed. This provides the best completion experience.")
-                    click.echo("You may need to restart your terminal for all changes to take effect.")
-                    return
+                    should_add_source_command = True
+                else:
+                    should_add_source_command = True
             
             # If oh-my-zsh wasn't installed or failed, use our custom plugin
-            click.echo("Setting up custom kubed plugin for completions...")
-            if setup_kubed_plugin():
-                click.echo("Custom plugin setup completed.")
-                click.echo("You need to restart your terminal for changes to take effect.")
+            if not use_oh_my_zsh:
+                click.echo("Setting up custom kubed plugin for completions...")
+                if setup_kubed_plugin():
+                    click.echo("Custom plugin setup completed.")
+                    should_add_source_command = True
     
     # Source the aliases
-    click.echo("Sourcing aliases...")
+    click.echo("Creating aliases file...")
+    create_aliases_file()
+    
+    click.echo("Creating completions files...")
+    create_completions_files()
+    
+    click.echo("Creating help wrapper script...")
+    create_help_wrapper()
+    
+    # Add the setup content to the shell config file
+    with open(shell_config, 'r') as f:
+        content = f.read()
+    
+    if '# Kubed configuration' not in content:
+        with open(shell_config, 'a') as f:
+            f.write('\n# Kubed configuration\n')
+            f.write(generate_shell_setup_content())
+    
+    # Display attention-grabbing message
+    terminal_width = 80
     try:
-        subprocess.run(f"source {os.path.join(os.path.dirname(__file__), 'aliases', 'aliases.sh')}", shell=True, check=True)
-        click.echo("Setup completed! You may need to restart your terminal for all changes to take effect.")
-    except subprocess.CalledProcessError:
-        click.echo("Failed to source aliases. Please manually source them after restarting your terminal.")
-        click.echo(f"Source file: {os.path.join(os.path.dirname(__file__), 'aliases', 'aliases.sh')}")
+        # Try to get actual terminal width if possible
+        terminal_width = os.get_terminal_size().columns
+    except:
+        pass
+    
+    border = "!" * terminal_width
+    
+    click.echo("\n\n")
+    click.echo(click.style(border, fg="red", bold=True))
+    click.echo(click.style(border, fg="red", bold=True))
+    click.echo("")
+    click.echo(click.style(" 🚨 IMPORTANT: YOU MUST RESTART YOUR TERMINAL FOR CHANGES TO TAKE EFFECT! 🚨 ".center(terminal_width), fg="red", bold=True))
+    
+    if should_add_source_command and shell == 'zsh':
+        click.echo("")
+        click.echo(click.style(" Alternatively, you can run this command to apply changes immediately:".center(terminal_width), fg="yellow"))
+        click.echo("")
+        source_cmd = f"source {shell_config}"
+        click.echo(click.style(f" {source_cmd} ".center(terminal_width), fg="green", bold=True))
+        
+        # Ask if user wants to source now
+        if click.confirm("\nWould you like to source changes now?", default=True):
+            try:
+                subprocess.run(source_cmd, shell=True, executable="/bin/zsh", check=True)
+                click.echo(click.style("\n✅ Changes applied successfully!", fg="green", bold=True))
+            except subprocess.CalledProcessError:
+                click.echo(click.style("\n❌ Failed to source changes. Please restart your terminal.", fg="red", bold=True))
+    
+    click.echo("")
+    click.echo(click.style(border, fg="red", bold=True))
+    click.echo(click.style(border, fg="red", bold=True))
+    click.echo("\n")
 
 def generate_shell_setup_content():
     """Generate the shell setup content for .zshrc/.bashrc."""
