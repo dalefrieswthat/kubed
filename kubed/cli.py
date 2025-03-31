@@ -170,57 +170,106 @@ def setup_oh_my_zsh():
     oh_my_zsh_dir = os.path.join(home, '.oh-my-zsh')
     
     if os.path.exists(oh_my_zsh_dir):
-        click.echo("oh-my-zsh is already installed.")
+        click.echo("oh-my-zsh is already installed, continuing with configuration...")
     else:
         click.echo("Installing oh-my-zsh for better completion support...")
         try:
-            # Clone the repository
-            subprocess.run(
-                'curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh',
-                shell=True, check=True
-            )
+            # Use RUNZSH=no to prevent the installer from trying to change the default shell
+            # Use --unattended for non-interactive installation
+            install_cmd = 'sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended'
+            subprocess.run(install_cmd, shell=True, check=True, env=dict(os.environ, RUNZSH="no"))
             click.echo("oh-my-zsh installed successfully.")
-        except subprocess.CalledProcessError:
-            click.echo("Failed to install oh-my-zsh. Please install it manually.")
+        except subprocess.CalledProcessError as e:
+            click.echo(f"Failed to install oh-my-zsh: {e}")
             return False
     
     # Install Powerlevel10k theme
     theme_dir = os.path.join(oh_my_zsh_dir, 'custom', 'themes')
+    os.makedirs(theme_dir, exist_ok=True)
+    
     if not os.path.exists(os.path.join(theme_dir, 'powerlevel10k')):
         click.echo("Installing Powerlevel10k theme...")
         try:
-            subprocess.run(
-                'git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k',
-                shell=True, check=True
-            )
+            # Clone with depth=1 for faster download and use HTTPS to avoid SSH key issues
+            p10k_cmd = 'git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k'
+            subprocess.run(p10k_cmd, shell=True, check=True)
             click.echo("Powerlevel10k theme installed successfully.")
-        except subprocess.CalledProcessError:
-            click.echo("Failed to install Powerlevel10k theme. Please install it manually.")
+        except subprocess.CalledProcessError as e:
+            click.echo(f"Failed to install Powerlevel10k theme: {e}")
             return False
+    else:
+        click.echo("Powerlevel10k theme is already installed.")
     
     # Ensure kubectl plugin is enabled and Powerlevel10k is set as theme
     zshrc_path = os.path.join(home, '.zshrc')
-    with open(zshrc_path, 'r') as f:
-        content = f.read()
-    
-    # Update plugins
-    if 'plugins=(git kubectl' not in content and 'plugins=(kubectl' not in content:
-        if 'plugins=(' in content:
-            content = content.replace('plugins=(', 'plugins=(kubectl ')
+    try:
+        with open(zshrc_path, 'r') as f:
+            content = f.read()
+        
+        content_modified = False
+        
+        # Update plugins
+        if 'plugins=(git kubectl' not in content and 'plugins=(kubectl' not in content:
+            if 'plugins=(' in content:
+                content = content.replace('plugins=(', 'plugins=(kubectl ')
+                content_modified = True
+            else:
+                content += '\n# Added by Kubed\nplugins=(kubectl)\n'
+                content_modified = True
+        
+        # Set Powerlevel10k as theme
+        if 'ZSH_THEME="powerlevel10k/powerlevel10k"' not in content:
+            if 'ZSH_THEME=' in content:
+                content = content.replace('ZSH_THEME="robbyrussell"', 'ZSH_THEME="powerlevel10k/powerlevel10k"')
+                content_modified = True
+            else:
+                content += '\n# Added by Kubed\nZSH_THEME="powerlevel10k/powerlevel10k"\n'
+                content_modified = True
+        
+        if content_modified:
+            with open(zshrc_path, 'w') as f:
+                f.write(content)
+            click.echo("Updated .zshrc with kubectl plugin and Powerlevel10k theme.")
         else:
-            content += '\n# Added by Kubed\nplugins=(kubectl)\n'
+            click.echo("No changes needed to .zshrc, configuration is already correct.")
+    except Exception as e:
+        click.echo(f"Error updating .zshrc: {e}")
+        return False
     
-    # Set Powerlevel10k as theme
-    if 'ZSH_THEME="powerlevel10k/powerlevel10k"' not in content:
-        if 'ZSH_THEME=' in content:
-            content = content.replace('ZSH_THEME="robbyrussell"', 'ZSH_THEME="powerlevel10k/powerlevel10k"')
-        else:
-            content += '\n# Added by Kubed\nZSH_THEME="powerlevel10k/powerlevel10k"\n'
-    
-    with open(zshrc_path, 'w') as f:
-        f.write(content)
-    
-    click.echo("Added kubectl plugin and Powerlevel10k theme to oh-my-zsh configuration.")
+    # Create a minimal p10k configuration file if not exists
+    p10k_config = os.path.join(home, '.p10k.zsh')
+    if not os.path.exists(p10k_config):
+        click.echo("Creating minimal Powerlevel10k configuration...")
+        try:
+            # Create a simple p10k config that doesn't require user input
+            minimal_p10k = '''# Generated by Kubed setup
+# Powerlevel10k minimal configuration
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# Basic settings for a clean prompt
+POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(dir vcs)
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status command_execution_time background_jobs)
+POWERLEVEL9K_PROMPT_ADD_NEWLINE=true
+POWERLEVEL9K_MODE="nerdfont-complete"
+POWERLEVEL9K_VCS_MODIFIED_BACKGROUND="yellow"
+'''
+            with open(p10k_config, 'w') as f:
+                f.write(minimal_p10k)
+                
+            # Add source to .zshrc if not already there
+            with open(zshrc_path, 'r') as f:
+                content = f.read()
+                
+            if '[[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh' not in content:
+                with open(zshrc_path, 'a') as f:
+                    f.write('\n# Source Powerlevel10k configuration\n[[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh\n')
+                    
+            click.echo("Created minimal Powerlevel10k configuration.")
+        except Exception as e:
+            click.echo(f"Error creating Powerlevel10k config: {e}")
+            # Not critical, so continue
     
     return True
 
@@ -332,32 +381,23 @@ def setup_command():
     # Flag to track if we should offer the source command
     should_add_source_command = False
     
-    # Check if user wants enhanced completion support
+    # Automatically install oh-my-zsh and Powerlevel10k for zsh users
     if shell == 'zsh':
-        enhanced_completion = click.confirm(
-            "Would you like enhanced completion support? (Recommended)", 
-            default=True
-        )
+        click.echo("Setting up enhanced completion support...")
         
-        if enhanced_completion:
-            use_oh_my_zsh = click.confirm(
-                "Would you like to install/use oh-my-zsh with Powerlevel10k theme? (Best completion experience)",
-                default=True
-            )
-            
-            if use_oh_my_zsh:
-                if setup_oh_my_zsh():
-                    click.echo("oh-my-zsh and Powerlevel10k setup completed. This provides the best completion experience.")
-                    should_add_source_command = True
-                else:
-                    should_add_source_command = True
-            
-            # If oh-my-zsh wasn't installed or failed, use our custom plugin
-            if not use_oh_my_zsh:
-                click.echo("Setting up custom kubed plugin for completions...")
-                if setup_kubed_plugin():
-                    click.echo("Custom plugin setup completed.")
-                    should_add_source_command = True
+        # Always install oh-my-zsh and Powerlevel10k
+        click.echo("Installing oh-my-zsh and Powerlevel10k for optimal experience...")
+        if setup_oh_my_zsh():
+            click.echo("✅ oh-my-zsh and Powerlevel10k setup completed successfully!")
+            should_add_source_command = True
+        else:
+            click.echo("❌ Failed to set up oh-my-zsh automatically. Falling back to custom plugin...")
+            if setup_kubed_plugin():
+                click.echo("✅ Custom plugin setup completed as fallback.")
+                should_add_source_command = True
+    else:
+        # For non-zsh shells
+        click.echo(f"Your shell is {shell}. Setting up standard completion support...")
     
     # Source the aliases
     click.echo("Creating aliases file...")
