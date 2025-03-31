@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "kubed"
-version = "2.1.6"
+version = "2.2.0"
 description = "A CLI tool for managing Kubernetes, Docker, Terraform, and Helm workflows"
 readme = "README.md"
 requires-python = ">=3.6"
