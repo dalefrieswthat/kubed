@@ -43,48 +43,14 @@ jobs:
       with:
         password: ${{ secrets.PYPI_API_TOKEN }}
 
-    - name: Setup Ruby
-      if: github.ref == 'refs/heads/main'
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: '3.0'
-        bundler-cache: true
-        working-directory: 'docs'
-
-    - name: Setup Node
-      if: github.ref == 'refs/heads/main'
-      uses: actions/setup-node@v3
-      with:
-        node-version: '16'
-        cache: 'npm'
-        cache-dependency-path: 'package.json'
-
-    - name: Build documentation site
+    - name: Prepare docs for deployment
       if: github.ref == 'refs/heads/main'
       run: |
-        cd docs
-        # Install NPM dependencies
-        npm install
-        
-        # Create a simplified _config_ci.yml to bypass PostCSS for the build
-        echo "title: Kubed Documentation" > _config_ci.yml
-        echo "description: Documentation and cheat sheets for Docker, Kubernetes, Terraform, and Helm" >> _config_ci.yml
-        echo "baseurl: \"\"" >> _config_ci.yml
-        echo "url: \"https://cmds.daleyarborough.com\"" >> _config_ci.yml
-        echo "markdown: kramdown" >> _config_ci.yml
-        echo "theme: minima" >> _config_ci.yml
-        
-        # Run the build using the simplified config
-        bundle install
-        bundle exec jekyll build --config _config_ci.yml --destination ../site
-        
-        # Copy static assets manually if needed
-        cp -r assets ../site/ || echo "No assets directory"
-        
-        # Add required files
-        touch ../site/.nojekyll
-        cp CNAME ../site/ || echo "No CNAME file found"
-        echo "Documentation built successfully"
+        mkdir -p site
+        cp -R docs/* site/
+        touch site/.nojekyll
+        echo "cmds.daleyarborough.com" > site/CNAME
+        echo "Documentation prepared for deployment"
         
     - name: Deploy to GitHub Pages
       if: github.ref == 'refs/heads/main'
