@@ -85,6 +85,42 @@ done
 
 def check_and_install_tools():
     """Check for required tools and install if missing."""
+    # First, ensure Python prerequisites are installed
+    python_tools = {
+        'setuptools': {
+            'check': 'python3 -c "import setuptools; print(setuptools.__version__)"',
+            'install': 'pip3 install --upgrade setuptools',
+            'install_msg': 'Python setuptools is not installed or outdated. Would you like to install/upgrade it? [Y/n]: ',
+            'install_cmd': 'pip3 install --upgrade setuptools',
+            'alt_install': 'pip3 install --upgrade setuptools'
+        },
+    }
+    
+    # Check Python prerequisites first
+    for tool, config in python_tools.items():
+        try:
+            subprocess.run(config['check'], shell=True, check=True, capture_output=True)
+            print(f"✅ {tool} is already installed.")
+        except subprocess.CalledProcessError:
+            print(f"\n{config['install_msg']}")
+            response = input().lower()
+            if response in ['y', 'yes', '']:
+                print(f"Installing {tool}...")
+                try:
+                    subprocess.run(config['install_cmd'], shell=True, check=True)
+                    print(f"✅ {tool} installed successfully!")
+                except subprocess.CalledProcessError as e:
+                    print(f"❌ Failed to install {tool}: {e}")
+                    print(f"Trying alternative installation method...")
+                    try:
+                        subprocess.run(config['alt_install'], shell=True, check=True)
+                        print(f"✅ {tool} installed successfully using alternative method!")
+                    except subprocess.CalledProcessError as e:
+                        print(f"❌ Failed to install {tool}. This may cause issues: {e}")
+            else:
+                print(f"Skipping {tool} installation. This may cause issues later.")
+    
+    # Continue with system tool checks
     tools = {
         'docker': {
             'check': 'docker --version',

@@ -35,6 +35,7 @@ if __name__ == "__main__":
         packages=find_packages(),
         include_package_data=True,
         install_requires=[
+            "setuptools>=42.0.0",
             "click",
             "rich",
             "pyyaml",
