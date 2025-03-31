@@ -31,7 +31,7 @@ def post_install():
 if __name__ == "__main__":
     setup(
         name="kubed",
-        version="2.1.7",
+        version="2.2.0",
         packages=find_packages(),
         include_package_data=True,
         install_requires=[
