@@ -5,7 +5,6 @@ nav_order: 1
 description: "Documentation and cheat sheets for Docker, Kubernetes, Terraform, and Helm"
 permalink: /
 ---
-<!-- Force rebuild -->
 
 <div class="hero bg-gradient-to-r from-blue-600 to-indigo-800 text-white py-16 px-4 rounded-lg shadow-xl mb-12">
   <h1 class="text-4xl md:text-5xl font-bold mb-4">Kubed <span class="text-blue-200">Documentation</span></h1>
@@ -36,7 +35,7 @@ permalink: /
       <i class="fas fa-cube"></i>
     </div>
     <h2 class="text-2xl font-bold mb-2">Terraform</h2>
-    <p class="text-gray-600 mb-4">Infrastructure as Code provisioning and management</p>
+    <p class="text-gray-600 mb-4">Infrastructure as Code (IaC) provisioning and management</p>
     <a href="/terraform" class="inline-block bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded transition-colors duration-300">View Commands</a>
   </div>
 
