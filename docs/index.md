@@ -35,7 +35,7 @@ permalink: /
       <i class="fas fa-cube"></i>
     </div>
     <h2 class="text-2xl font-bold mb-2">Terraform</h2>
-    <p class="text-gray-600 mb-4">Infrastructure as Code automation</p>
+    <p class="text-gray-600 mb-4">Infrastructure as Code provisioning and management</p>
     <a href="/terraform" class="inline-block bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded transition-colors duration-300">View Commands</a>
   </div>
 
