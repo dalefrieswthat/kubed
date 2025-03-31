@@ -43,17 +43,34 @@ jobs:
       with:
         password: ${{ secrets.PYPI_API_TOKEN }}
 
+    - name: Setup Ruby
+      if: github.ref == 'refs/heads/main'
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.0'
+        bundler-cache: true
+        working-directory: 'docs'
+
+    - name: Setup Node
+      if: github.ref == 'refs/heads/main'
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+
     - name: Build documentation site
       if: github.ref == 'refs/heads/main'
       run: |
         cd docs
-        touch .nojekyll
-        echo "Documentation built"
+        bundle install
+        bundle exec jekyll build --destination ../site
+        touch ../site/.nojekyll
+        cp CNAME ../site/ || echo "No CNAME file found"
+        echo "Documentation built successfully"
         
     - name: Deploy to GitHub Pages
       if: github.ref == 'refs/heads/main'
       uses: JamesIves/github-pages-deploy-action@v4
       with:
-        folder: docs
+        folder: site
         branch: gh-pages
         token: ${{ secrets.GITHUB_TOKEN }} 
