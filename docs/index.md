@@ -44,7 +44,9 @@ permalink: /
     <pre><code class="language-bash">pip install kubed
 kubed-setup</code></pre>
   </div>
-  <p class="note">Restart your terminal after installation to apply changes.</p>
+  <div class="warning">
+    <span class="warning-icon">⚠️</span> You MUST restart your terminal after installation for changes to take effect!
+  </div>
 </div>
 
 <div class="footer-cta">
