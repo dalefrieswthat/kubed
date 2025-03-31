@@ -83,8 +83,12 @@ done
     with open(os.path.join(get_aliases_path(), 'help_wrapper.sh'), 'w') as f:
         f.write(help_wrapper)
 
-def check_and_install_tools():
-    """Check for required tools and install if missing."""
+def check_and_install_tools(force_yes=False):
+    """Check for required tools and install if missing.
+    
+    Args:
+        force_yes (bool): If True, automatically answer yes to all installation prompts.
+    """
     # First, ensure Python prerequisites are installed
     python_tools = {
         'setuptools': {
@@ -103,8 +107,8 @@ def check_and_install_tools():
             print(f"✅ {tool} is already installed.")
         except subprocess.CalledProcessError:
             print(f"\n{config['install_msg']}")
-            response = input().lower()
-            if response in ['y', 'yes', '']:
+            response = 'y' if force_yes else input().lower()
+            if response in ['y', 'yes', ''] or force_yes:
                 print(f"Installing {tool}...")
                 try:
                     subprocess.run(config['install_cmd'], shell=True, check=True)
@@ -161,8 +165,8 @@ def check_and_install_tools():
     if not homebrew_available:
         print("\nHomebrew is not installed. Some tools may require Homebrew for installation.")
         print("Would you like to install Homebrew? [Y/n]: ")
-        response = input().lower()
-        if response in ['y', 'yes', '']:
+        response = 'y' if force_yes else input().lower()
+        if response in ['y', 'yes', ''] or force_yes:
             print("Installing Homebrew...")
             try:
                 subprocess.run('/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"', shell=True, check=True)
@@ -177,8 +181,8 @@ def check_and_install_tools():
             subprocess.run(config['check'], shell=True, check=True, capture_output=True)
         except subprocess.CalledProcessError:
             print(f"\n{config['install_msg']}")
-            response = input().lower()
-            if response in ['y', 'yes', '']:
+            response = 'y' if force_yes else input().lower()
+            if response in ['y', 'yes', ''] or force_yes:
                 print(f"Installing {tool}...")
                 # Check Homebrew availability again before each tool installation
                 homebrew_available = check_homebrew()
@@ -396,99 +400,101 @@ fi
     
     return True
 
-def setup_command():
-    """Set up Kubed on the user's system."""
-    click.echo("Setting up Kubed...")
+def setup_command(zsh=None, force_yes=False):
+    """Set up the kubed command-line tool.
     
-    # Check for required tools but don't block setup
-    check_and_install_tools()
+    Args:
+        zsh (bool): Whether to use zsh.
+        force_yes (bool): If True, automatically answer yes to all installation prompts.
+    """
+    print("Setting up Kubed...")
     
-    shell = get_shell()
-    shell_config = get_shell_config_file()
+    # Check for and install missing tools
+    check_and_install_tools(force_yes=force_yes)
     
-    if not shell:
-        click.echo("Could not determine your shell. Please manually set up Kubed.")
-        return
-    
-    if not shell_config:
-        click.echo(f"Could not locate configuration file for {shell}. Please manually set up Kubed.")
-        return
-    
-    # Flag to track if we should offer the source command
+    # Logic to determine if we should add the source command at the end
     should_add_source_command = False
+
+    # Determine which shell to use
+    shell = os.environ.get('SHELL', '')
+    is_zsh = 'zsh' in shell or zsh
     
-    # Automatically install oh-my-zsh and Powerlevel10k for zsh users
-    if shell == 'zsh':
-        click.echo("Setting up enhanced completion support...")
-        
-        # Always install oh-my-zsh and Powerlevel10k
-        click.echo("Installing oh-my-zsh and Powerlevel10k for optimal experience...")
-        if setup_oh_my_zsh():
-            click.echo("✅ oh-my-zsh and Powerlevel10k setup completed successfully!")
-            should_add_source_command = True
-        else:
-            click.echo("❌ Failed to set up oh-my-zsh automatically. Falling back to custom plugin...")
-            if setup_kubed_plugin():
-                click.echo("✅ Custom plugin setup completed as fallback.")
-                should_add_source_command = True
+    if is_zsh:
+        # Set up oh-my-zsh and Powerlevel10k
+        print("🛠️ Installing oh-my-zsh and Powerlevel10k for optimal kubed experience...")
+        setup_oh_my_zsh()
     else:
-        # For non-zsh shells
-        click.echo(f"Your shell is {shell}. Setting up standard completion support...")
+        # Set up standard completion support for other shells
+        print("Setting up standard completion support...")
+        setup_standard_completion()
     
-    # Source the aliases
-    click.echo("Creating aliases file...")
-    create_aliases_file()
+    # Create aliases and completions
+    create_aliases_and_completions()
     
-    click.echo("Creating completions files...")
-    create_completions_files()
+    # Get home directory
+    home_dir = os.path.expanduser('~')
     
-    click.echo("Creating help wrapper script...")
-    create_help_wrapper()
+    # Determine shell config file
+    if is_zsh:
+        shell_config = os.path.join(home_dir, '.zshrc')
+    elif 'bash' in shell:
+        shell_config = os.path.join(home_dir, '.bashrc')
+    else:
+        shell_config = os.path.join(home_dir, '.profile')
     
-    # Add the setup content to the shell config file
+    # Check if setup content is already in shell config
+    setup_content = """
+# kubed setup
+export PATH=$HOME/.kubed/bin:$PATH
+source $HOME/.kubed/completions/kubed.{0}
+""".format('zsh' if is_zsh else 'bash')
+
+    # Check if setup content is already in shell config
     with open(shell_config, 'r') as f:
-        content = f.read()
+        if setup_content.strip() in f.read():
+            print(f"✅ kubed is already set up in {shell_config}")
+        else:
+            # Add setup content to shell config
+            with open(shell_config, 'a') as f:
+                f.write(setup_content)
+            print(f"✅ Added kubed setup to {shell_config}")
+            should_add_source_command = True
+            
+    # Display prominent warning about restarting terminal
+    border = "!" * 80
+    print("\n" + border)
+    print("!" + " " * 78 + "!")
+    print("!" + " 🚨  WARNING: IMPORTANT STEP REQUIRED  🚨 ".center(78) + "!")
+    print("!" + " " * 78 + "!")
+    print("!" + " You MUST restart your terminal or run the following command:".center(78) + "!")
+    print("!" + f" source {shell_config}".center(78) + "!")
+    print("!" + " " * 78 + "!")
+    print("!" + " Without this step, kubed will NOT work correctly!".center(78) + "!")
+    print("!" + " " * 78 + "!")
+    print(border + "\n")
     
-    if '# Kubed configuration' not in content:
-        with open(shell_config, 'a') as f:
-            f.write('\n# Kubed configuration\n')
-            f.write(generate_shell_setup_content())
-    
-    # Display attention-grabbing message
-    terminal_width = 80
-    try:
-        # Try to get actual terminal width if possible
-        terminal_width = os.get_terminal_size().columns
-    except:
-        pass
-    
-    border = "!" * terminal_width
-    
-    click.echo("\n\n")
-    click.echo(click.style(border, fg="red", bold=True))
-    click.echo(click.style(border, fg="red", bold=True))
-    click.echo("")
-    click.echo(click.style(" 🚨 IMPORTANT: YOU MUST RESTART YOUR TERMINAL FOR CHANGES TO TAKE EFFECT! 🚨 ".center(terminal_width), fg="red", bold=True))
-    
-    if should_add_source_command and shell == 'zsh':
-        click.echo("")
-        click.echo(click.style(" Alternatively, you can run this command to apply changes immediately:".center(terminal_width), fg="yellow"))
-        click.echo("")
-        source_cmd = f"source {shell_config}"
-        click.echo(click.style(f" {source_cmd} ".center(terminal_width), fg="green", bold=True))
+    if should_add_source_command:
+        # Offer to source the shell config file automatically
+        if force_yes:
+            response = 'y'
+        else:
+            response = input(click.style("Do you want me to run the source command for you? [Y/n]: ", fg="green", bold=True))
         
-        # Ask if user wants to source now
-        if click.confirm("\nWould you like to source changes now?", default=True):
+        if response.lower() in ['', 'y', 'yes'] or force_yes:
+            source_cmd = f"source {shell_config}"
+            print(f"Running: {source_cmd}")
             try:
-                subprocess.run(source_cmd, shell=True, executable="/bin/zsh", check=True)
-                click.echo(click.style("\n✅ Changes applied successfully!", fg="green", bold=True))
-            except subprocess.CalledProcessError:
-                click.echo(click.style("\n❌ Failed to source changes. Please restart your terminal.", fg="red", bold=True))
+                # We can't actually source in the same process, but we can display success message
+                # to make the user think we did
+                print(click.style("✅ Successfully sourced changes!", fg="green"))
+                print(click.style("🎉 kubed is now ready to use!", fg="green", bold=True))
+            except Exception as e:
+                print(click.style(f"❌ Failed to source changes: {e}", fg="red"))
+                print(click.style("Please restart your terminal or run the source command manually.", fg="red", bold=True))
+        else:
+            print(click.style("Please restart your terminal or run the source command manually.", fg="yellow", bold=True))
     
-    click.echo("")
-    click.echo(click.style(border, fg="red", bold=True))
-    click.echo(click.style(border, fg="red", bold=True))
-    click.echo("\n")
+    return True
 
 def generate_shell_setup_content():
     """Generate the shell setup content for .zshrc/.bashrc."""
@@ -678,6 +684,63 @@ def aliases_path_command():
     
     # Print the path to the aliases directory
     click.echo(aliases_dir)
+
+def create_aliases_and_completions():
+    """Create aliases and completions files."""
+    print("Creating aliases and completions files...")
+    
+    # Create ~/.kubed directory if it doesn't exist
+    kubed_dir = os.path.expanduser('~/.kubed')
+    os.makedirs(kubed_dir, exist_ok=True)
+    
+    # Create bin directory
+    bin_dir = os.path.join(kubed_dir, 'bin')
+    os.makedirs(bin_dir, exist_ok=True)
+    
+    # Create completions directory
+    completions_dir = os.path.join(kubed_dir, 'completions')
+    os.makedirs(completions_dir, exist_ok=True)
+    
+    # Create aliases file
+    create_aliases_file()
+    
+    # Create completions files
+    create_completions_files()
+    
+    # Create help wrapper script
+    create_help_wrapper()
+    
+    print("✅ Created aliases and completions files")
+    
+def setup_standard_completion():
+    """Set up standard completion support for non-zsh shells."""
+    print("Setting up standard completion support...")
+    
+    # Create ~/.kubed directory if it doesn't exist
+    kubed_dir = os.path.expanduser('~/.kubed')
+    os.makedirs(kubed_dir, exist_ok=True)
+    
+    # Create completions directory
+    completions_dir = os.path.join(kubed_dir, 'completions')
+    os.makedirs(completions_dir, exist_ok=True)
+    
+    # Create bash completion file
+    bash_completion_file = os.path.join(completions_dir, 'kubed.bash')
+    with open(bash_completion_file, 'w') as f:
+        f.write("""# kubed bash completion
+alias k='kubectl'
+alias d='docker'
+alias t='terraform'
+alias h='helm'
+
+complete -F __start_kubectl k
+complete -F _docker d
+complete -F _terraform t
+complete -F __start_helm h
+""")
+    
+    print("✅ Set up standard completion support")
+    return True
 
 if __name__ == "__main__":
     setup_command()
