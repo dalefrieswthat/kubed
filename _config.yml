@@ -1,0 +1,61 @@
+title: Kubed Documentation
+description: Documentation and cheat sheets for Docker, Kubernetes, Terraform, and Helm
+baseurl: ""
+url: "https://cmds.daleyarborough.com"
+
+# Build settings
+markdown: kramdown
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+# Sass configuration
+sass:
+  style: compressed
+
+# Include directories that should be processed
+include:
+  - assets
+  - assets/css
+  - assets/js
+  - assets/img
+
+# Exclude from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+  - .git/
+  - postcss.config.js
+  - package.json
+  - package-lock.json
+  - tailwind.config.js
+  - README.md
+
+# Default layout
+defaults:
+  -
+    scope:
+      path: ""
+    values:
+      layout: "default"
+
+# Navigation
+nav_order: 1
+nav_exclude: false
+
+# Footer
+footer:
+  content: "© 2024 Dale Yarborough. All rights reserved."
+  links:
+    - label: GitHub
+      url: https://github.com/dalefrieswthat/kubed
+
+# Social links
+social:
+  - label: GitHub
+    url: https://github.com/dalefrieswthat/kubed
+  - label: Email
+    url: mailto:daleyarborough@gmail.com 
