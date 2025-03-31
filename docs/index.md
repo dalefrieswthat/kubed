@@ -5,6 +5,7 @@ nav_order: 1
 description: "Documentation and cheat sheets for Docker, Kubernetes, Terraform, and Helm"
 permalink: /
 ---
+<!-- Force rebuild -->
 
 <div class="hero bg-gradient-to-r from-blue-600 to-indigo-800 text-white py-16 px-4 rounded-lg shadow-xl mb-12">
   <h1 class="text-4xl md:text-5xl font-bold mb-4">Kubed <span class="text-blue-200">Documentation</span></h1>
