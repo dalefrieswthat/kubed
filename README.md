@@ -29,6 +29,11 @@ Once installed, you can use the following commands:
   ```bash
   kubed-setup
   ```
+  
+  With automatic installation (non-interactive):
+  ```bash
+  kubed-setup --force-yes
+  ```
 
 - **Get Completions Path:**
   ```bash
@@ -44,8 +49,14 @@ Once installed, you can use the following commands:
 
 - Python 3.6 or later
 - The following Python packages:
+  - `setuptools>=42.0.0`
   - `click>=7.0`
   - `requests`
+  - `rich`
+  - `pyyaml`
+  - `docker`
+  - `kubernetes`
+  - `helm`
 
 ## License
 
