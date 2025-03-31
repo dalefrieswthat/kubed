@@ -15,25 +15,25 @@ permalink: /
   <div class="feature-card">
     <h2>Docker</h2>
     <p>Container management and orchestration</p>
-    <a href="/kubed/docker" class="button">View Commands</a>
+    <a href="/docker" class="button">View Commands</a>
   </div>
 
   <div class="feature-card">
     <h2>Kubernetes</h2>
     <p>Container orchestration and management</p>
-    <a href="/kubed/kubernetes" class="button">View Commands</a>
+    <a href="/kubernetes" class="button">View Commands</a>
   </div>
 
   <div class="feature-card">
     <h2>Terraform</h2>
     <p>Infrastructure as Code</p>
-    <a href="/kubed/terraform" class="button">View Commands</a>
+    <a href="/terraform" class="button">View Commands</a>
   </div>
 
   <div class="feature-card">
     <h2>Helm</h2>
     <p>Kubernetes package management</p>
-    <a href="/kubed/helm" class="button">View Commands</a>
+    <a href="/helm" class="button">View Commands</a>
   </div>
 </div>
 

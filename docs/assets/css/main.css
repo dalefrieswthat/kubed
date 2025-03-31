@@ -103,6 +103,7 @@ p {
 
 /* Code Blocks */
 pre {
+    position: relative;
     background-color: var(--code-background);
     padding: 1rem;
     border-radius: 4px;
@@ -253,6 +254,7 @@ footer {
     cursor: pointer;
     font-size: 0.8rem;
     transition: background-color 0.3s;
+    z-index: 10;
 }
 
 .copy-button:hover {
