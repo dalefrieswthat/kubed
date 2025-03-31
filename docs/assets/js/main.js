@@ -75,37 +75,43 @@ function initCopyButtons() {
 
 // Mobile menu toggle
 function initMobileMenu() {
-    const nav = document.querySelector('nav');
-    const navLinks = document.querySelector('.nav-links');
-    const menuButton = document.querySelector('.mobile-menu-button');
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
     
-    if (!menuButton) return;
+    if (menuToggle && mobileMenu) {
+        menuToggle.addEventListener('click', function() {
+            mobileMenu.classList.toggle('hidden');
+        });
+    }
     
-    // Toggle mobile menu
-    menuButton.addEventListener('click', (e) => {
-        e.stopPropagation();
-        navLinks.classList.toggle('show');
-        
-        // Toggle icon
-        const icon = menuButton.querySelector('i');
-        if (navLinks.classList.contains('show')) {
-            icon.classList.remove('fa-bars');
-            icon.classList.add('fa-times');
-        } else {
-            icon.classList.remove('fa-times');
-            icon.classList.add('fa-bars');
-        }
+    // Add animation classes to elements when they come into view
+    const animateElements = document.querySelectorAll('.feature-card, .cta, .footer-cta');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.1
     });
     
-    // Close mobile menu when clicking outside
-    document.addEventListener('click', (e) => {
-        if (!nav.contains(e.target) && navLinks.classList.contains('show')) {
-            navLinks.classList.remove('show');
-            const icon = menuButton.querySelector('i');
-            icon.classList.remove('fa-times');
-            icon.classList.add('fa-bars');
-        }
+    animateElements.forEach(element => {
+        element.classList.add('opacity-0', 'translate-y-4', 'transition-all', 'duration-500');
+        observer.observe(element);
     });
+    
+    // Add CSS class for animation when visible
+    document.head.insertAdjacentHTML('beforeend', `
+        <style>
+            .animate-in {
+                opacity: 1 !important;
+                transform: translateY(0) !important;
+            }
+        </style>
+    `);
 }
 
 // Add card hover effects

@@ -9,12 +9,17 @@ theme: minima
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
-  - jekyll-postcss
 
-# PostCSS config
-postcss:
-  enabled: true
-  config_path: ./postcss.config.js
+# Sass configuration
+sass:
+  style: compressed
+
+# Include directories that should be processed
+include:
+  - assets
+  - assets/css
+  - assets/js
+  - assets/img
 
 # Exclude from processing
 exclude:
@@ -27,6 +32,15 @@ exclude:
   - package.json
   - package-lock.json
   - tailwind.config.js
+  - README.md
+
+# Default layout
+defaults:
+  -
+    scope:
+      path: ""
+    values:
+      layout: "default"
 
 # Navigation
 nav_order: 1
