@@ -41,6 +41,7 @@ This will:
 2. Set up shell completions and aliases
 3. Configure your shell environment
 4. For zsh users, install oh-my-zsh and Powerlevel10k theme for optimal experience
+5. For fish users, install Starship prompt for optimal experience
 
 ## Non-interactive Installation
 
@@ -53,6 +54,7 @@ kubed-setup --force-yes
 This will automatically:
 - Install any missing tools without prompting
 - Set up oh-my-zsh and Powerlevel10k for zsh users
+- Set up Starship for fish users
 - Configure your shell environment
 
 ## Installation Options
@@ -77,6 +79,7 @@ kubed-setup --zsh --force-yes
    ```bash
    source ~/.zshrc    # for zsh users
    source ~/.bashrc   # for bash users
+   source ~/.config/fish/config.fish  # for fish users
    ```
 
 Kubed will offer to run the source command for you during setup.
@@ -105,6 +108,16 @@ brew install terraform # macOS
 brew install helm      # macOS
 ```
 
+### Fish Shell (Recommended)
+```bash
+brew install fish      # macOS
+```
+
+### Starship Prompt (for Fish)
+```bash
+curl -sS https://starship.rs/install.sh | sh
+```
+
 ## Troubleshooting
 
 ### Missing setuptools
@@ -119,11 +132,11 @@ If your shell isn't properly configured after installation:
 
 1. Check if the kubed setup block exists in your shell config:
    ```bash
-   grep kubed ~/.zshrc  # or ~/.bashrc
+   grep kubed ~/.zshrc  # or ~/.bashrc or ~/.config/fish/config.fish
    ```
 2. Manually source the configuration:
    ```bash
-   source ~/.zshrc      # or ~/.bashrc
+   source ~/.zshrc      # or ~/.bashrc or ~/.config/fish/config.fish
    ```
 3. Run setup again:
    ```bash

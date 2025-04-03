@@ -71,7 +71,7 @@ if __name__ == "__main__":
             "Topic :: Software Development :: Libraries :: Python Modules",
         ],
         python_requires=">=3.6",
+        cmdclass={
+            "install": post_install,
+        },
     )
-    # Run post-install message
-    if "install" in sys.argv or "develop" in sys.argv:
-        post_install()

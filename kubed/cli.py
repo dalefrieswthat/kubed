@@ -29,6 +29,8 @@ def get_shell_config_file():
         return os.path.join(home, '.bash_profile')
     elif shell == 'zsh':
         return os.path.join(home, '.zshrc')
+    elif shell == 'fish':
+        return os.path.join(home, '.config', 'fish', 'config.fish')
     else:
         return None
 
@@ -418,11 +420,16 @@ def setup_command(zsh=None, force_yes=False):
     # Determine which shell to use
     shell = os.environ.get('SHELL', '')
     is_zsh = 'zsh' in shell or zsh
+    is_fish = 'fish' in shell
     
     if is_zsh:
         # Set up oh-my-zsh and Powerlevel10k
         print("🛠️ Installing oh-my-zsh and Powerlevel10k for optimal kubed experience...")
         setup_oh_my_zsh()
+    elif is_fish:
+        # Set up Fish shell with Starship
+        print("🛠️ Setting up Fish shell with Starship for optimal kubed experience...")
+        setup_fish_starship()
     else:
         # Set up standard completion support for other shells
         print("Setting up standard completion support...")
@@ -437,13 +444,24 @@ def setup_command(zsh=None, force_yes=False):
     # Determine shell config file
     if is_zsh:
         shell_config = os.path.join(home_dir, '.zshrc')
+    elif is_fish:
+        shell_config = os.path.join(home_dir, '.config', 'fish', 'config.fish')
     elif 'bash' in shell:
         shell_config = os.path.join(home_dir, '.bashrc')
     else:
         shell_config = os.path.join(home_dir, '.profile')
     
     # Check if setup content is already in shell config
-    setup_content = """
+    if is_fish:
+        setup_content = """
+# kubed setup
+fish_add_path $HOME/.kubed/bin
+source $HOME/.kubed/completions/fish/fish_completions.fish
+source $HOME/.kubed/aliases/aliases.fish
+source $HOME/.kubed/aliases/help_wrapper.fish
+"""
+    else:
+        setup_content = """
 # kubed setup
 export PATH=$HOME/.kubed/bin:$PATH
 source $HOME/.kubed/completions/kubed.{0}
@@ -467,7 +485,10 @@ source $HOME/.kubed/completions/kubed.{0}
     print("!" + " 🚨  WARNING: IMPORTANT STEP REQUIRED  🚨 ".center(78) + "!")
     print("!" + " " * 78 + "!")
     print("!" + " You MUST restart your terminal or run the following command:".center(78) + "!")
-    print("!" + f" source {shell_config}".center(78) + "!")
+    if is_fish:
+        print("!" + f" source {shell_config}".center(78) + "!")
+    else:
+        print("!" + f" source {shell_config}".center(78) + "!")
     print("!" + " " * 78 + "!")
     print("!" + " Without this step, kubed will NOT work correctly!".center(78) + "!")
     print("!" + " " * 78 + "!")
@@ -701,6 +722,10 @@ def create_aliases_and_completions():
     completions_dir = os.path.join(kubed_dir, 'completions')
     os.makedirs(completions_dir, exist_ok=True)
     
+    # Create fish directory if it doesn't exist
+    fish_dir = os.path.join(completions_dir, 'fish')
+    os.makedirs(fish_dir, exist_ok=True)
+    
     # Create aliases file
     create_aliases_file()
     
@@ -709,6 +734,126 @@ def create_aliases_and_completions():
     
     # Create help wrapper script
     create_help_wrapper()
+    
+    # Copy Fish completion file
+    fish_completion_file = os.path.join(fish_dir, 'fish_completions.fish')
+    with open(fish_completion_file, 'w') as f:
+        f.write("""# Kubed Fish completions
+
+# Function to check if a command exists
+function _kubed_command_exists
+    command -v $argv[1] >/dev/null 2>&1
+end
+
+# Function to source kubectl completion
+function _kubed_source_kubectl
+    if _kubed_command_exists kubectl
+        kubectl completion fish | source
+        complete -c k -w kubectl
+    end
+end
+
+# Function to source docker completion
+function _kubed_source_docker
+    if _kubed_command_exists docker
+        docker completion fish | source
+        complete -c d -w docker
+    end
+end
+
+# Function to source terraform completion
+function _kubed_source_terraform
+    if _kubed_command_exists terraform
+        terraform -generate-autocomplete
+        complete -c tf -w terraform
+    end
+end
+
+# Function to source helm completion
+function _kubed_source_helm
+    if _kubed_command_exists helm
+        helm completion fish | source
+        complete -c h -w helm
+    end
+end
+
+# Main function to initialize all completions
+function _kubed_init_completions
+    _kubed_source_kubectl
+    _kubed_source_docker
+    _kubed_source_terraform
+    _kubed_source_helm
+end
+
+# Initialize completions
+_kubed_init_completions
+""")
+    
+    # Copy Fish aliases file
+    fish_aliases_file = os.path.join(kubed_dir, 'aliases', 'aliases.fish')
+    os.makedirs(os.path.dirname(fish_aliases_file), exist_ok=True)
+    with open(fish_aliases_file, 'w') as f:
+        f.write("""# Kubed Fish aliases
+
+# Kubernetes
+alias k='kubectl'
+alias kgp='kubectl get pods'
+alias kgd='kubectl get deployments'
+alias kgs='kubectl get services'
+alias kgn='kubectl get nodes'
+alias kd='kubectl describe'
+alias kl='kubectl logs'
+alias kx='kubectl exec -it'
+alias kaf='kubectl apply -f'
+alias kdel='kubectl delete'
+
+# Docker
+alias d='docker'
+alias dc='docker-compose'
+alias di='docker images'
+alias dps='docker ps'
+alias drm='docker rm'
+alias drmi='docker rmi'
+
+# Terraform
+alias tf='terraform'
+alias tfa='terraform apply'
+alias tfp='terraform plan'
+alias tfd='terraform destroy'
+alias tfi='terraform init'
+alias tfw='terraform workspace'
+
+# Helm
+alias h='helm'
+alias hl='helm list'
+alias hi='helm install'
+alias hu='helm upgrade'
+alias hun='helm uninstall'
+alias hr='helm repo'
+""")
+    
+    # Copy Fish help wrapper file
+    fish_help_wrapper_file = os.path.join(kubed_dir, 'aliases', 'help_wrapper.fish')
+    with open(fish_help_wrapper_file, 'w') as f:
+        f.write("""# Kubed help wrapper function
+function _kubed_help_wrapper
+    if string match -q -- "--help" $argv; or string match -q -- "-h" $argv
+        # Run the original command
+        eval $argv
+        echo -e "\n\033[1;32mℹ️  For more information, visit: https://cmds.daleyarborough.com\033[0m\n"
+    else
+        # Just run the original command
+        eval $argv
+    end
+end
+
+# Apply help wrapper to common tools
+for cmd in docker terraform kubectl helm
+    if command -v $cmd >/dev/null 2>&1
+        alias $cmd="_kubed_help_wrapper $cmd"
+    end
+end
+""")
     
     print("✅ Created aliases and completions files")
     
@@ -740,6 +885,178 @@ complete -F __start_helm h
 """)
     
     print("✅ Set up standard completion support")
+    return True
+
+def setup_fish_starship():
+    """Set up Fish shell with Starship prompt."""
+    home = os.path.expanduser('~')
+    
+    # Check if Fish is installed
+    if not shutil.which('fish'):
+        click.echo("Fish shell is not installed. Please install Fish first.")
+        return False
+    
+    # Check if Starship is installed
+    if not shutil.which('starship'):
+        click.echo("Installing Starship prompt...")
+        try:
+            # Install Starship using the recommended method
+            install_cmd = 'curl -sS https://starship.rs/install.sh | sh'
+            subprocess.run(install_cmd, shell=True, check=True)
+            click.echo("Starship installed successfully.")
+        except subprocess.CalledProcessError as e:
+            click.echo(f"Failed to install Starship: {e}")
+            return False
+    else:
+        click.echo("Starship is already installed.")
+    
+    # Create Fish config directory if it doesn't exist
+    fish_config_dir = os.path.join(home, '.config', 'fish')
+    os.makedirs(fish_config_dir, exist_ok=True)
+    
+    # Create or update config.fish
+    config_fish_path = os.path.join(fish_config_dir, 'config.fish')
+    
+    # Check if Starship is already configured
+    with open(config_fish_path, 'r') as f:
+        content = f.read()
+    
+    if 'starship init fish' not in content:
+        # Add Starship initialization to config.fish
+        with open(config_fish_path, 'a') as f:
+            f.write("\n# Initialize Starship prompt\nstarship init fish | source\n")
+        click.echo("Added Starship initialization to config.fish")
+    else:
+        click.echo("Starship is already configured in config.fish")
+    
+    # Create Starship config directory if it doesn't exist
+    starship_config_dir = os.path.join(home, '.config')
+    os.makedirs(starship_config_dir, exist_ok=True)
+    
+    # Create a minimal Starship config file if not exists
+    starship_config_path = os.path.join(starship_config_dir, 'starship.toml')
+    if not os.path.exists(starship_config_path):
+        click.echo("Creating minimal Starship configuration...")
+        try:
+            # Create a simple Starship config that matches kubed's style
+            minimal_starship = '''# Starship configuration for kubed
+# A minimal, clean prompt focused on utility
+
+# Disable the package module, as it's not needed
+[package]
+disabled = true
+
+# Configure the prompt format
+format = """
+$username\
+$hostname\
+$directory\
+$git_branch\
+$git_status\
+$nodejs\
+$python\
+$rust\
+$terraform\
+$kubernetes\
+$docker_context\
+$cmd_duration\
+$line_break\
+$character"""
+
+# Username configuration
+[username]
+show_always = true
+style_user = "bold blue"
+style_root = "bold red"
+
+# Hostname configuration
+[hostname]
+ssh_only = true
+format = '@[$hostname](bold red) '
+disabled = false
+
+# Directory configuration
+[directory]
+truncation_length = 3
+truncate_to_repo = true
+style = "cyan bold"
+
+# Git configuration
+[git_branch]
+format = "[$symbol$branch]($style) "
+symbol = " "
+style = "purple"
+
+[git_status]
+format = '([\[$all_status$ahead_behind\]]($style) )'
+style = "cyan"
+
+# Kubernetes configuration
+[kubernetes]
+format = 'on [⛵ $context \($namespace\)](dimmed green) '
+disabled = false
+detect_files = ['kubeconfig']
+
+# Docker configuration
+[docker_context]
+format = "via [🐳 $context](blue) "
+disabled = false
+
+# Command duration configuration
+[cmd_duration]
+format = "[$duration]($style) "
+style = "yellow"
+
+# Character configuration
+[character]
+success_symbol = "[❯](green)"
+error_symbol = "[❯](red)"
+vimcmd_symbol = "[❮](green)"
+'''
+            with open(starship_config_path, 'w') as f:
+                f.write(minimal_starship)
+            click.echo("Created minimal Starship configuration.")
+        except Exception as e:
+            click.echo(f"Error creating Starship config: {e}")
+            # Not critical, so continue
+    
+    # Create Fish completions directory if it doesn't exist
+    fish_completions_dir = os.path.join(fish_config_dir, 'completions')
+    os.makedirs(fish_completions_dir, exist_ok=True)
+    
+    # Create kubed completion file
+    completion_file = os.path.join(fish_completions_dir, 'kubed.fish')
+    with open(completion_file, 'w') as f:
+        f.write("""# kubed fish completion
+alias k='kubectl'
+alias d='docker'
+alias tf='terraform'
+alias h='helm'
+
+# Source completions
+if command -v kubectl >/dev/null 2>&1
+    kubectl completion fish | source
+    complete -c k -w kubectl
+end
+
+if command -v docker >/dev/null 2>&1
+    docker completion fish | source
+    complete -c d -w docker
+end
+
+if command -v terraform >/dev/null 2>&1
+    terraform -generate-autocomplete
+    complete -c tf -w terraform
+end
+
+if command -v helm >/dev/null 2>&1
+    helm completion fish | source
+    complete -c h -w helm
+end
+""")
+    
+    click.echo("Created kubed Fish completion file.")
+    
     return True
 
 if __name__ == "__main__":
