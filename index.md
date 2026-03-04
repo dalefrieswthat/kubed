@@ -2,7 +2,7 @@
 layout: default
 title: Home
 nav_order: 1
-description: "Documentation and cheat sheets for Docker, Kubernetes, Terraform, and Helm"
+description: "CLI and context tooling for Kubernetes, Docker, Terraform, and Helm — agent-friendly infra layout index and shell productivity"
 permalink: /
 ---
 
@@ -11,7 +11,20 @@ permalink: /
     Kubed
   </h1>
   <p class="text-xl text-zinc-600 max-w-2xl leading-relaxed">
-    CLI productivity tool with autocompletion for Docker, Kubernetes, Terraform, and Helm. Your reference for cloud-native development.
+    CLI and context tooling for Kubernetes, Docker, Terraform, and Helm. A file-based, agent-friendly infra layout index so tools don't need to run <code class="px-1.5 py-0.5 rounded bg-zinc-200 font-mono text-base">kubectl</code> for discovery—plus shell completions and aliases to keep you in flow.
+  </p>
+</section>
+
+<section class="mb-16">
+  <h2 class="text-sm font-semibold text-zinc-600 uppercase tracking-wider mb-4">What Kubed solves</h2>
+  <p class="text-zinc-600 max-w-2xl mb-4">
+    Agents and tools today run many <code class="px-1.5 py-0.5 rounded bg-zinc-200 font-mono text-sm">kubectl</code> commands just to understand your cluster. That's slow and token-heavy. Kubed writes a single <code class="px-1.5 py-0.5 rounded bg-zinc-200 font-mono text-sm">.kubed/layout.json</code> that captures workloads, services, configmaps, secrets, and their relationships. Tools read that file instead of polling the API repeatedly.
+  </p>
+  <p class="text-zinc-600 max-w-2xl mb-4">
+    For humans, Kubed installs shell completions and aliases for Docker, Kubernetes, Terraform, and Helm so you stay productive at the terminal.
+  </p>
+  <p class="text-zinc-600 max-w-2xl">
+    Install once with <code class="px-1.5 py-0.5 rounded bg-zinc-200 font-mono text-sm">pip install kubed && kubed-setup</code>. Build the Go binary with <code class="px-1.5 py-0.5 rounded bg-zinc-200 font-mono text-sm">make build</code> and run <code class="px-1.5 py-0.5 rounded bg-zinc-200 font-mono text-sm">kubed layout capture</code> to generate the layout index from your current kube context.
   </p>
 </section>
 
