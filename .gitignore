@@ -50,3 +50,5 @@ CLAUDE.md
 *.log
 # Directory named ~ (home symlink or similar)
 ~/
+# Merge conflict backup (e.g. terraform~ee1c203...)
+terraform~*
