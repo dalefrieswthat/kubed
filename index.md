@@ -6,74 +6,78 @@ description: "Documentation and cheat sheets for Docker, Kubernetes, Terraform, 
 permalink: /
 ---
 
-<div class="hero bg-gradient-to-r from-blue-600 to-indigo-800 text-white py-16 px-4 rounded-lg shadow-xl mb-12">
-  <h1 class="text-4xl md:text-5xl font-bold mb-4">Kubed <span class="text-blue-200">Documentation</span></h1>
-  <p class="text-xl opacity-90 max-w-2xl">Your comprehensive guide to cloud-native development tools</p>
-</div>
+<section class="mb-16">
+  <h1 class="text-4xl md:text-5xl font-semibold text-surface-900 tracking-tight mb-4">
+    Kubed
+  </h1>
+  <p class="text-xl text-slate-600 max-w-2xl leading-relaxed">
+    CLI productivity tool with autocompletion for Docker, Kubernetes, Terraform, and Helm. Your reference for cloud-native development.
+  </p>
+</section>
 
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-  <div class="feature-card bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-6 border-t-4 border-blue-500">
-    <div class="feature-icon text-blue-500 text-4xl mb-4">
-      <i class="fab fa-docker"></i>
-    </div>
-    <h2 class="text-2xl font-bold mb-2">Docker</h2>
-    <p class="text-gray-600 mb-4">Container management and orchestration</p>
-    <a href="/docker" class="inline-block bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded transition-colors duration-300">View Commands</a>
-  </div>
-
-  <div class="feature-card bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-6 border-t-4 border-indigo-500">
-    <div class="feature-icon text-indigo-500 text-4xl mb-4">
-      <i class="fas fa-dharmachakra"></i>
-    </div>
-    <h2 class="text-2xl font-bold mb-2">Kubernetes</h2>
-    <p class="text-gray-600 mb-4">Container orchestration and management</p>
-    <a href="/kubernetes" class="inline-block bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-4 rounded transition-colors duration-300">View Commands</a>
-  </div>
-
-  <div class="feature-card bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-6 border-t-4 border-purple-500">
-    <div class="feature-icon text-purple-500 text-4xl mb-4">
-      <i class="fas fa-cube"></i>
-    </div>
-    <h2 class="text-2xl font-bold mb-2">Terraform</h2>
-    <p class="text-gray-600 mb-4">UPDATED: Infrastructure as Code provisioning and management</p>
-    <a href="/terraform" class="inline-block bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded transition-colors duration-300">View Commands</a>
-  </div>
-
-  <div class="feature-card bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-6 border-t-4 border-teal-500">
-    <div class="feature-icon text-teal-500 text-4xl mb-4">
-      <i class="fas fa-chart-pie"></i>
-    </div>
-    <h2 class="text-2xl font-bold mb-2">Helm</h2>
-    <p class="text-gray-600 mb-4">Kubernetes package management</p>
-    <a href="/helm" class="inline-block bg-teal-500 hover:bg-teal-600 text-white py-2 px-4 rounded transition-colors duration-300">View Commands</a>
-  </div>
-</div>
-
-<div class="cta bg-gray-100 rounded-lg p-8 mb-12">
-  <h2 class="text-3xl font-bold mb-4">Get Started with Kubed</h2>
-  <p class="text-xl text-gray-700 mb-6">Enhance your terminal experience with powerful autocompletion and useful aliases</p>
-  <div class="code-block bg-gray-900 rounded-lg p-4 mb-4">
-    <pre class="text-green-400"><code class="language-bash">pip install kubed
-kubed-setup</code></pre>
-  </div>
-  <div class="code-block bg-gray-900 rounded-lg p-4 mb-4">
-    <h4 class="text-white mb-2">For non-interactive installation:</h4>
-    <pre class="text-green-400"><code class="language-bash">pip install kubed
-kubed-setup --force-yes</code></pre>
-  </div>
-  <div class="warning bg-yellow-100 border-l-4 border-yellow-500 p-4 text-yellow-700 mb-6">
-    <span class="warning-icon text-2xl">⚠️</span> You MUST restart your terminal after installation for changes to take effect!
-  </div>
-  <div class="learn-more">
-    <a href="/installation" class="inline-block bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition duration-300 font-medium">
-      <i class="fas fa-book mr-2"></i> View Complete Installation Guide
+<section class="mb-16">
+  <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-6">Tools</h2>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <a href="/docker" class="group block bg-white rounded-2xl border border-surface-200 p-6 shadow-card hover:shadow-soft hover:border-primary-500/30 transition-all duration-200">
+      <div class="w-10 h-10 rounded-lg bg-[#2496ED]/10 flex items-center justify-center mb-4 group-hover:bg-[#2496ED]/20 transition-colors">
+        <i class="fab fa-docker text-[#2496ED] text-xl" aria-hidden="true"></i>
+      </div>
+      <h3 class="text-lg font-semibold text-surface-900 mb-1">Docker</h3>
+      <p class="text-sm text-slate-500">Container management and orchestration</p>
+    </a>
+    <a href="/kubernetes" class="group block bg-white rounded-2xl border border-surface-200 p-6 shadow-card hover:shadow-soft hover:border-primary-500/30 transition-all duration-200">
+      <div class="w-10 h-10 rounded-lg bg-[#326CE5]/10 flex items-center justify-center mb-4 group-hover:bg-[#326CE5]/20 transition-colors">
+        <i class="fas fa-dharmachakra text-[#326CE5] text-xl" aria-hidden="true"></i>
+      </div>
+      <h3 class="text-lg font-semibold text-surface-900 mb-1">Kubernetes</h3>
+      <p class="text-sm text-slate-500">Container orchestration and management</p>
+    </a>
+    <a href="/terraform" class="group block bg-white rounded-2xl border border-surface-200 p-6 shadow-card hover:shadow-soft hover:border-primary-500/30 transition-all duration-200">
+      <div class="w-10 h-10 rounded-lg bg-[#7B42BC]/10 flex items-center justify-center mb-4 group-hover:bg-[#7B42BC]/20 transition-colors">
+        <i class="fas fa-cube text-[#7B42BC] text-xl" aria-hidden="true"></i>
+      </div>
+      <h3 class="text-lg font-semibold text-surface-900 mb-1">Terraform</h3>
+      <p class="text-sm text-slate-500">Infrastructure as Code</p>
+    </a>
+    <a href="/helm" class="group block bg-white rounded-2xl border border-surface-200 p-6 shadow-card hover:shadow-soft hover:border-primary-500/30 transition-all duration-200">
+      <div class="w-10 h-10 rounded-lg bg-[#0F1689]/10 flex items-center justify-center mb-4 group-hover:bg-[#0F1689]/20 transition-colors">
+        <i class="fas fa-chart-pie text-[#0F1689] text-xl" aria-hidden="true"></i>
+      </div>
+      <h3 class="text-lg font-semibold text-surface-900 mb-1">Helm</h3>
+      <p class="text-sm text-slate-500">Kubernetes package management</p>
     </a>
   </div>
-</div>
+</section>
 
-<div class="footer-cta text-center py-8">
-  <p class="text-gray-600 mb-4">Found an error or have a suggestion?</p>
-  <a href="https://github.com/dalefrieswthat/kubed/issues" class="inline-block bg-gray-800 hover:bg-gray-900 text-white py-2 px-4 rounded-lg transition duration-300">
-    <i class="fas fa-bug mr-2"></i> Report an Issue
+<section class="bg-white rounded-2xl border border-surface-200 p-8 md:p-10 shadow-card mb-12">
+  <h2 class="text-2xl font-semibold text-surface-900 mb-2">Get started</h2>
+  <p class="text-slate-600 mb-6">Install Kubed and run setup for your shell. Restart your terminal after installation for changes to take effect.</p>
+  <div class="space-y-4">
+    <div class="rounded-xl bg-surface-900 overflow-hidden">
+      <div class="px-4 py-2 text-xs font-mono text-slate-400 border-b border-white/10">Terminal</div>
+      <pre class="p-4 overflow-x-auto"><code class="font-mono text-sm text-slate-200">pip install kubed
+kubed-setup</code></pre>
+    </div>
+    <div class="rounded-xl bg-surface-900 overflow-hidden">
+      <div class="px-4 py-2 text-xs font-mono text-slate-400 border-b border-white/10">Non-interactive</div>
+      <pre class="p-4 overflow-x-auto"><code class="font-mono text-sm text-slate-200">pip install kubed
+kubed-setup --force-yes</code></pre>
+    </div>
+  </div>
+  <div class="mt-6 flex items-start gap-3 p-4 rounded-lg bg-amber-50 border border-amber-200/60">
+    <span class="text-amber-600 text-lg" aria-hidden="true">⚠️</span>
+    <p class="text-sm text-amber-800 font-medium">Restart your terminal after installation for changes to take effect.</p>
+  </div>
+  <a href="/installation" class="inline-flex items-center gap-2 mt-6 px-4 py-2.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg transition-colors">
+    <i class="fas fa-book" aria-hidden="true"></i>
+    Full installation guide
   </a>
-</div> 
+</section>
+
+<section class="text-center py-8 border-t border-surface-200">
+  <p class="text-slate-500 mb-4">Found an error or have a suggestion?</p>
+  <a href="https://github.com/dalefrieswthat/kubed/issues" class="inline-flex items-center gap-2 px-4 py-2 bg-surface-800 hover:bg-surface-900 text-white text-sm font-medium rounded-lg transition-colors">
+    <i class="fas fa-bug" aria-hidden="true"></i>
+    Report an issue
+  </a>
+</section>

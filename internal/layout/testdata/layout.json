@@ -1,0 +1,64 @@
+{
+  "version": "v1",
+  "generated_at": "2026-03-04T12:00:00Z",
+  "context": "test-context",
+  "namespaces": ["default", "app"],
+  "resources": [
+    {
+      "kind": "Deployment",
+      "name": "api",
+      "namespace": "default",
+      "replicas": 2,
+      "images": ["myreg/api:v1"]
+    },
+    {
+      "kind": "Service",
+      "name": "api",
+      "namespace": "default"
+    },
+    {
+      "kind": "ConfigMap",
+      "name": "api-config",
+      "namespace": "default"
+    },
+    {
+      "kind": "Secret",
+      "name": "api-secret",
+      "namespace": "default"
+    },
+    {
+      "kind": "Deployment",
+      "name": "worker",
+      "namespace": "app",
+      "replicas": 1,
+      "images": ["myreg/worker:v1"]
+    },
+    {
+      "kind": "Service",
+      "name": "worker",
+      "namespace": "app"
+    }
+  ],
+  "relationships": [
+    {
+      "from": { "kind": "Service", "name": "api", "namespace": "default" },
+      "to": { "kind": "Deployment", "name": "api", "namespace": "default" },
+      "kind": "service-selects-deployment"
+    },
+    {
+      "from": { "kind": "Deployment", "name": "api", "namespace": "default" },
+      "to": { "kind": "ConfigMap", "name": "api-config", "namespace": "default" },
+      "kind": "deployment-uses-configmap"
+    },
+    {
+      "from": { "kind": "Deployment", "name": "api", "namespace": "default" },
+      "to": { "kind": "Secret", "name": "api-secret", "namespace": "default" },
+      "kind": "deployment-uses-secret"
+    },
+    {
+      "from": { "kind": "Service", "name": "worker", "namespace": "app" },
+      "to": { "kind": "Deployment", "name": "worker", "namespace": "app" },
+      "kind": "service-selects-deployment"
+    }
+  ]
+}

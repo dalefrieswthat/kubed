@@ -1,0 +1,52 @@
+# === Build / install artifacts ===
+dist/
+build/
+# Binary at repo root (build output is in build/)
+/kubed
+kubed-layout
+*.exe
+*.egg
+*.egg-info/
+.eggs/
+_site/
+
+# === Environments ===
+venv/
+.venv/
+env/
+build_env/
+test_env/
+.env
+.env.*
+
+# === Python ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# === Node (docs site) ===
+node_modules/
+
+# === IDE / editor (keep repo CNCF-style, no tool-specific config) ===
+.cursor/
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# === OS ===
+.DS_Store
+Thumbs.db
+
+# === Internal planning and agent context (do not publish) ===
+cursor-context/
+docs/plans/
+CLAUDE.md
+
+# === Local / accidental ===
+*.local
+*.log
+# Directory named ~ (home symlink or similar)
+~/
