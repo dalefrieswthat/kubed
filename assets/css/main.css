@@ -247,13 +247,24 @@ pre {
     margin: 1rem 0;
 }
 
-/* Dark terminal-style blocks: no light background, inherit text color */
-.bg-zinc-900 pre,
-.bg-zinc-900 pre code {
+/* Dark terminal-style blocks: force high-contrast white text (leading-edge readability) */
+.terminal-code-block pre,
+.terminal-code-block pre code,
+.terminal-code-block code {
     background-color: transparent !important;
+    color: #ffffff !important;
 }
+.terminal-code-block .text-zinc-300 {
+    color: #d4d4d8 !important; /* zinc-300: readable label on dark */
+}
+.bg-zinc-900 pre,
+.bg-zinc-900 pre code,
 .bg-zinc-900 code {
-    color: inherit;
+    background-color: transparent !important;
+    color: #ffffff !important;
+}
+.bg-zinc-900 .text-zinc-400 {
+    color: #a1a1aa !important;
 }
 
 code {

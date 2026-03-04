@@ -53,20 +53,20 @@ permalink: /
   <h2 class="text-2xl font-semibold text-surface-900 mb-2">Get started</h2>
   <p class="text-slate-700 mb-6">Install Kubed and run setup for your shell. Restart your terminal after installation for changes to take effect.</p>
   <div class="space-y-4">
-    <div class="rounded-xl overflow-hidden bg-zinc-900 border border-zinc-700/50">
-      <div class="px-4 py-2.5 text-xs font-mono text-zinc-400 border-b border-zinc-700/50 bg-zinc-800/80">Terminal</div>
+    <div class="rounded-xl overflow-hidden bg-zinc-900 border border-zinc-700/50 terminal-code-block">
+      <div class="px-4 py-2.5 text-xs font-mono text-zinc-300 border-b border-zinc-700/50 bg-zinc-800/80">Terminal</div>
       <pre class="p-4 overflow-x-auto"><code class="font-mono text-sm text-white">pip install kubed
 kubed-setup</code></pre>
     </div>
-    <div class="rounded-xl overflow-hidden bg-zinc-900 border border-zinc-700/50">
-      <div class="px-4 py-2.5 text-xs font-mono text-zinc-400 border-b border-zinc-700/50 bg-zinc-800/80">Non-interactive</div>
+    <div class="rounded-xl overflow-hidden bg-zinc-900 border border-zinc-700/50 terminal-code-block">
+      <div class="px-4 py-2.5 text-xs font-mono text-zinc-300 border-b border-zinc-700/50 bg-zinc-800/80">Non-interactive</div>
       <pre class="p-4 overflow-x-auto"><code class="font-mono text-sm text-white">pip install kubed
 kubed-setup --force-yes</code></pre>
     </div>
   </div>
-  <div class="mt-6 flex items-start gap-3 p-4 rounded-lg bg-amber-50 border border-amber-300 text-amber-900">
-    <span class="text-amber-600 text-lg" aria-hidden="true">⚠️</span>
-    <p class="text-sm font-medium text-amber-900">Restart your terminal after installation for changes to take effect.</p>
+  <div class="mt-6 flex items-start gap-3 p-4 rounded-lg bg-slate-50 border border-slate-200 text-slate-800">
+    <span class="text-slate-500 text-lg shrink-0" aria-hidden="true">⚠</span>
+    <p class="text-sm font-medium">Restart your terminal after installation for changes to take effect.</p>
   </div>
   <a href="/installation" class="inline-flex items-center gap-2 mt-6 px-4 py-2.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg transition-colors">
     <i class="fas fa-book" aria-hidden="true"></i>
