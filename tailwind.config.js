@@ -17,19 +17,11 @@ module.exports = {
         mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
       },
       colors: {
-        primary: {
-          50: '#f0f9ff',
-          100: '#e0f2fe',
-          500: '#0ea5e9',
-          600: '#0284c7',
-          700: '#0369a1',
-        },
-        surface: {
-          50: '#f8fafc',
-          100: '#f1f5f9',
-          200: '#e2e8f0',
-          800: '#1e293b',
-          900: '#0f172a',
+        accent: {
+          DEFAULT: '#2563eb',
+          hover: '#1d4ed8',
+          light: '#eff6ff',
+          border: '#bfdbfe',
         },
       },
       borderRadius: {
@@ -44,10 +36,10 @@ module.exports = {
           css: {
             maxWidth: '65ch',
             fontFamily: 'Instrument Sans, system-ui, sans-serif',
-            color: 'inherit',
-            a: { color: '#0284c7', '&:hover': { color: '#0369a1' } },
-            'h1,h2,h3,h4': { fontFamily: 'Instrument Sans, system-ui, sans-serif', fontWeight: '600' },
-            code: { fontFamily: 'JetBrains Mono, monospace', fontWeight: '400', backgroundColor: '#f1f5f9', padding: '0.2em 0.4em', borderRadius: '0.25rem' },
+            color: '#3f3f46',
+            a: { color: '#2563eb', '&:hover': { color: '#1d4ed8' } },
+            'h1,h2,h3,h4': { fontFamily: 'Instrument Sans, system-ui, sans-serif', fontWeight: '600', color: '#18181b' },
+            code: { fontFamily: 'JetBrains Mono, monospace', fontWeight: '400', backgroundColor: '#f4f4f5', padding: '0.2em 0.4em', borderRadius: '0.25rem', color: '#18181b' },
             'code::before, code::after': { content: '""' },
           },
         },

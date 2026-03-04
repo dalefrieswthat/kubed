@@ -17,8 +17,8 @@
 <!-- Favicon (SVG only - small, no hang) -->
 <link rel="icon" type="image/svg+xml" href="{{ '/assets/img/favicon.svg' | relative_url }}">
 
-<!-- CSS -->
-<link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+<!-- CSS (cache-bust so deploys show updated styles) -->
+<link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}?v={{ site.time | date: '%s' }}">
 
 <!-- SEO tags -->
 {% seo %} 

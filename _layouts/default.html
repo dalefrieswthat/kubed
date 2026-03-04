@@ -3,31 +3,31 @@
 <head>
     {% include head.html %}
 </head>
-<body class="font-sans antialiased bg-surface-50 text-slate-800">
-    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-surface-200 shadow-soft">
+<body class="font-sans antialiased bg-zinc-50 text-zinc-800">
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-zinc-200 shadow-sm">
         <nav class="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
-            <a href="/" class="text-xl font-semibold text-surface-900 tracking-tight">
+            <a href="/" class="text-xl font-semibold text-zinc-900 tracking-tight">
                 Kubed
             </a>
             <div class="hidden md:flex items-center gap-1">
-                <a href="/" class="px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 rounded-lg hover:bg-surface-100 {% if page.url == '/' %}text-slate-900 bg-surface-100{% endif %}">Home</a>
-                <a href="/installation" class="px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 rounded-lg hover:bg-surface-100 {% if page.url == '/installation' %}text-slate-900 bg-surface-100{% endif %}">Installation</a>
-                <a href="/docker" class="px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 rounded-lg hover:bg-surface-100 {% if page.url contains '/docker' %}text-slate-900 bg-surface-100{% endif %}">Docker</a>
-                <a href="/kubernetes" class="px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 rounded-lg hover:bg-surface-100 {% if page.url contains '/kubernetes' %}text-slate-900 bg-surface-100{% endif %}">Kubernetes</a>
-                <a href="/terraform" class="px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 rounded-lg hover:bg-surface-100 {% if page.url contains '/terraform' %}text-slate-900 bg-surface-100{% endif %}">Terraform</a>
-                <a href="/helm" class="px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 rounded-lg hover:bg-surface-100 {% if page.url contains '/helm' %}text-slate-900 bg-surface-100{% endif %}">Helm</a>
+                <a href="/" class="px-3 py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 rounded-lg hover:bg-zinc-100 {% if page.url == '/' %}text-zinc-900 bg-zinc-100{% endif %}">Home</a>
+                <a href="/installation" class="px-3 py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 rounded-lg hover:bg-zinc-100 {% if page.url == '/installation' %}text-zinc-900 bg-zinc-100{% endif %}">Installation</a>
+                <a href="/docker" class="px-3 py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 rounded-lg hover:bg-zinc-100 {% if page.url contains '/docker' %}text-zinc-900 bg-zinc-100{% endif %}">Docker</a>
+                <a href="/kubernetes" class="px-3 py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 rounded-lg hover:bg-zinc-100 {% if page.url contains '/kubernetes' %}text-zinc-900 bg-zinc-100{% endif %}">Kubernetes</a>
+                <a href="/terraform" class="px-3 py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 rounded-lg hover:bg-zinc-100 {% if page.url contains '/terraform' %}text-zinc-900 bg-zinc-100{% endif %}">Terraform</a>
+                <a href="/helm" class="px-3 py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 rounded-lg hover:bg-zinc-100 {% if page.url contains '/helm' %}text-zinc-900 bg-zinc-100{% endif %}">Helm</a>
             </div>
-            <button class="md:hidden p-2 text-slate-600 hover:text-slate-900 rounded-lg" id="menu-toggle" aria-label="Menu">
+            <button class="md:hidden p-2 text-zinc-600 hover:text-zinc-900 rounded-lg" id="menu-toggle" aria-label="Menu">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
             </button>
         </nav>
-        <div class="md:hidden hidden border-t border-surface-200 bg-white px-4 py-3" id="mobile-menu">
-            <a href="/" class="block py-2 text-sm font-medium text-slate-600 hover:text-slate-900">Home</a>
-            <a href="/installation" class="block py-2 text-sm font-medium text-slate-600 hover:text-slate-900">Installation</a>
-            <a href="/docker" class="block py-2 text-sm font-medium text-slate-600 hover:text-slate-900">Docker</a>
-            <a href="/kubernetes" class="block py-2 text-sm font-medium text-slate-600 hover:text-slate-900">Kubernetes</a>
-            <a href="/terraform" class="block py-2 text-sm font-medium text-slate-600 hover:text-slate-900">Terraform</a>
-            <a href="/helm" class="block py-2 text-sm font-medium text-slate-600 hover:text-slate-900">Helm</a>
+        <div class="md:hidden hidden border-t border-zinc-200 bg-white px-4 py-3" id="mobile-menu">
+            <a href="/" class="block py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900">Home</a>
+            <a href="/installation" class="block py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900">Installation</a>
+            <a href="/docker" class="block py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900">Docker</a>
+            <a href="/kubernetes" class="block py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900">Kubernetes</a>
+            <a href="/terraform" class="block py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900">Terraform</a>
+            <a href="/helm" class="block py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900">Helm</a>
         </div>
     </header>
 
@@ -35,21 +35,21 @@
         {{ content }}
     </main>
 
-    <footer class="border-t border-surface-200 bg-white mt-16">
+    <footer class="border-t border-zinc-200 bg-white mt-16">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                 <div>
-                    <p class="font-semibold text-surface-900">Kubed</p>
-                    <p class="text-sm text-slate-600 mt-1 max-w-md">CLI productivity tool with autocompletion for Docker, Kubernetes, Terraform, and Helm. Built for modern, agent-friendly workflows.</p>
-                    <p class="text-xs text-slate-500 mt-3">Built with Jekyll, Tailwind CSS</p>
+                    <p class="font-semibold text-zinc-900">Kubed</p>
+                    <p class="text-sm text-zinc-600 mt-1 max-w-md">CLI productivity tool with autocompletion for Docker, Kubernetes, Terraform, and Helm. Built for modern, agent-friendly workflows.</p>
+                    <p class="text-xs text-zinc-500 mt-3">Built with Jekyll, Tailwind CSS</p>
                 </div>
                 <div class="flex flex-wrap gap-6">
-                    <a href="https://github.com/dalefrieswthat/kubed" class="text-sm font-medium text-slate-600 hover:text-slate-900">GitHub</a>
-                    <a href="https://github.com/dalefrieswthat/kubed/issues" class="text-sm font-medium text-slate-600 hover:text-slate-900">Report issue</a>
-                    <a href="mailto:daleyarborough@gmail.com" class="text-sm font-medium text-slate-600 hover:text-slate-900">Contact</a>
+                    <a href="https://github.com/dalefrieswthat/kubed" class="text-sm font-medium text-zinc-600 hover:text-zinc-900">GitHub</a>
+                    <a href="https://github.com/dalefrieswthat/kubed/issues" class="text-sm font-medium text-zinc-600 hover:text-zinc-900">Report issue</a>
+                    <a href="mailto:daleyarborough@gmail.com" class="text-sm font-medium text-zinc-600 hover:text-zinc-900">Contact</a>
                 </div>
             </div>
-            <p class="text-center text-slate-500 text-sm mt-8 pt-6 border-t border-surface-200">© {{ site.time | date: '%Y' }} Dale Yarborough</p>
+            <p class="text-center text-zinc-500 text-sm mt-8 pt-6 border-t border-zinc-200">© {{ site.time | date: '%Y' }} Dale Yarborough</p>
         </div>
     </footer>
 
