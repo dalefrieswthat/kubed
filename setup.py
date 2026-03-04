@@ -31,7 +31,7 @@ def post_install():
 if __name__ == "__main__":
     setup(
         name="kubed",
-        version="2.2.0",
+        version="2.3.0",
         packages=find_packages(),
         include_package_data=True,
         install_requires=[
@@ -52,7 +52,7 @@ if __name__ == "__main__":
         },
         author="Dale Yarborough",
         author_email="daleyarborough@gmail.com",
-        description="A CLI tool for managing Kubernetes, Docker, Terraform, and Helm workflows",
+        description="CLI and context tooling for Kubernetes, Docker, Terraform, and Helm — agent-friendly infra layout index plus shell completions and aliases",
         long_description=open("README.md").read(),
         long_description_content_type="text/markdown",
         url="https://cmds.daleyarborough.com",

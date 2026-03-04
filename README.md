@@ -1,9 +1,9 @@
 # Kubed
 
-CLI productivity tool for Docker, Kubernetes, Terraform, and Helm: completions, aliases, and a **layout index** for agent-friendly infra views.
+CLI and context tooling for Kubernetes, Docker, Terraform, and Helm. Agent-friendly infra layout index (`.kubed/layout.json`) so tools don't need to run `kubectl` for discovery, plus shell completions and aliases to keep you in flow.
 
-- **Docs site:** [cmds.daleyarborough.com](https://cmds.daleyarborough.com) — built with Jekyll + Tailwind (see [Docs site](#kubed-documentation-site) below).
-- **Layout index (V1):** `kubed layout capture` writes `.kubed/layout.json` from your current kube context; `kubed layout show` prints it. Agents can read this file instead of running `kubectl` for discovery. Schema: [docs/LAYOUT_SCHEMA.md](docs/LAYOUT_SCHEMA.md).
+- **Docs site:** [cmds.daleyarborough.com](https://cmds.daleyarborough.com)
+- **Layout index:** `kubed layout capture` writes `.kubed/layout.json` from your current kube context; `kubed layout show` prints it. Agents read one file instead of many `kubectl` calls. Schema: [docs/LAYOUT_SCHEMA.md](docs/LAYOUT_SCHEMA.md).
 
 ## Installation (Python package)
 
