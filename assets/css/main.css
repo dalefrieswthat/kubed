@@ -247,6 +247,15 @@ pre {
     margin: 1rem 0;
 }
 
+/* Dark terminal-style blocks: no light background, inherit text color */
+.bg-zinc-900 pre,
+.bg-zinc-900 pre code {
+    background-color: transparent !important;
+}
+.bg-zinc-900 code {
+    color: inherit;
+}
+
 code {
     font-family: var(--font-mono);
     font-size: 0.9rem;
