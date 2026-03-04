@@ -31,7 +31,7 @@ def post_install():
 if __name__ == "__main__":
     setup(
         name="kubed",
-        version="2.3.0",
+        version="2.3.1",
         packages=find_packages(),
         include_package_data=True,
         install_requires=[
@@ -46,13 +46,15 @@ if __name__ == "__main__":
         ],
         entry_points={
             "console_scripts": [
+                "kubed=kubed.main:cli",
                 "kubed-setup=kubed.cli:setup_command",
-                "kubed=kubed.cli:cli",
+                "kubed-completions-path=kubed.cli:completions_path_command",
+                "kubed-aliases-path=kubed.cli:aliases_path_command",
             ],
         },
         author="Dale Yarborough",
         author_email="daleyarborough@gmail.com",
-        description="CLI and context tooling for Kubernetes, Docker, Terraform, and Helm — agent-friendly infra layout index plus shell completions and aliases",
+        description="97% fewer tokens for AI agents to understand infra — layout index for Kubernetes, Docker, Terraform, Helm plus shell completions",
         long_description=open("README.md").read(),
         long_description_content_type="text/markdown",
         url="https://cmds.daleyarborough.com",

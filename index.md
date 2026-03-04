@@ -16,15 +16,35 @@ permalink: /
 </section>
 
 <section class="mb-16">
-  <h2 class="text-sm font-semibold text-zinc-600 uppercase tracking-wider mb-4">What Kubed solves</h2>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+    <div class="bg-white rounded-2xl border border-zinc-200 p-6 text-center shadow-card">
+      <div class="text-4xl font-bold text-accent mb-1">97%</div>
+      <div class="text-sm text-zinc-600">fewer tokens per query</div>
+    </div>
+    <div class="bg-white rounded-2xl border border-zinc-200 p-6 text-center shadow-card">
+      <div class="text-4xl font-bold text-accent mb-1">1</div>
+      <div class="text-sm text-zinc-600">file instead of 10+ tool calls</div>
+    </div>
+    <div class="bg-white rounded-2xl border border-zinc-200 p-6 text-center shadow-card">
+      <div class="text-4xl font-bold text-accent mb-1">~1.5K</div>
+      <div class="text-sm text-zinc-600">tokens vs ~50K+ for discovery</div>
+    </div>
+  </div>
+
+  <h2 class="text-sm font-semibold text-zinc-600 uppercase tracking-wider mb-4">The problem</h2>
   <p class="text-zinc-600 max-w-2xl mb-4">
-    Agents and tools today run many <code class="px-1.5 py-0.5 rounded bg-zinc-200 font-mono text-sm">kubectl</code> commands just to understand your cluster. That's slow and token-heavy. Kubed writes a single <code class="px-1.5 py-0.5 rounded bg-zinc-200 font-mono text-sm">.kubed/layout.json</code> that captures workloads, services, configmaps, secrets, and their relationships. Tools read that file instead of polling the API repeatedly.
+    AI agents burn thousands of tokens just to understand your infrastructure. Every <code class="px-1.5 py-0.5 rounded bg-zinc-200 font-mono text-sm">kubectl get</code>, <code class="px-1.5 py-0.5 rounded bg-zinc-200 font-mono text-sm">find</code>, and <code class="px-1.5 py-0.5 rounded bg-zinc-200 font-mono text-sm">ls -laR</code> adds latency and cost. A single workspace exploration can consume 50,000+ tokens before answering one question.
+  </p>
+
+  <h2 class="text-sm font-semibold text-zinc-600 uppercase tracking-wider mb-4 mt-8">The solution</h2>
+  <p class="text-zinc-600 max-w-2xl mb-4">
+    Kubed writes a single <code class="px-1.5 py-0.5 rounded bg-zinc-200 font-mono text-sm">.kubed/layout.json</code> that captures your entire infrastructure layout: Dockerfiles, Terraform, Helm charts, Kubernetes resources, project structure, and cross-repo shared infra. Agents read one ~1,500-token file instead of running discovery commands.
   </p>
   <p class="text-zinc-600 max-w-2xl mb-4">
-    For humans, Kubed installs shell completions and aliases for Docker, Kubernetes, Terraform, and Helm so you stay productive at the terminal.
+    The layout is section-based with IDs and tags, so agents can query specific parts (e.g., <code class="px-1.5 py-0.5 rounded bg-zinc-200 font-mono text-sm">"section id=infra_paths"</code>) without loading the entire file.
   </p>
   <p class="text-zinc-600 max-w-2xl">
-    Install once with <code class="px-1.5 py-0.5 rounded bg-zinc-200 font-mono text-sm">pip install kubed && kubed-setup</code>. Build the Go binary with <code class="px-1.5 py-0.5 rounded bg-zinc-200 font-mono text-sm">make build</code> and run <code class="px-1.5 py-0.5 rounded bg-zinc-200 font-mono text-sm">kubed layout capture</code> to generate the layout index from your current kube context.
+    For humans, Kubed installs shell completions and aliases for Docker, Kubernetes, Terraform, and Helm so you stay productive at the terminal.
   </p>
 </section>
 

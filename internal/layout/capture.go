@@ -2,60 +2,25 @@ package layout
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"os"
-	"path/filepath"
-	"time"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/tools/clientcmd"
 )
 
-// RunCapture connects to the current kube context, lists Deployments/Services/ConfigMaps/Secrets,
-// computes relationships, and writes layout.json.
+// RunCapture builds a v2 index (infra paths, project structure, context sections, optional k8s layout) and writes .kubed/layout.json.
 func RunCapture(allNamespaces bool) error {
-	config, err := clientcmd.BuildConfigFromFlags("", "")
-	if err != nil {
-		return fmt.Errorf("kube config: %w", err)
-	}
-	config.QPS = 50
-	config.Burst = 100
-
-	clientset, err := kubernetes.NewForConfig(config)
-	if err != nil {
-		return fmt.Errorf("create client: %w", err)
-	}
-
-	ctx := context.Background()
-	layoutPath, err := LayoutPath()
+	idx, err := RunCaptureV2(allNamespaces)
 	if err != nil {
 		return err
 	}
-
-	layout, err := buildLayout(ctx, clientset, config.Host, allNamespaces)
+	layoutPath, err := WriteIndexV2(idx)
 	if err != nil {
 		return err
 	}
-
-	layout.Version = "v1"
-	layout.GeneratedAt = time.Now().UTC().Format(time.RFC3339)
-
-	dir := filepath.Dir(layoutPath)
-	if err := os.MkdirAll(dir, 0755); err != nil {
-		return fmt.Errorf("create dir %s: %w", dir, err)
-	}
-
-	out, err := json.MarshalIndent(layout, "", "  ")
-	if err != nil {
-		return err
-	}
-	if err := os.WriteFile(layoutPath, out, 0644); err != nil {
-		return fmt.Errorf("write %s: %w", layoutPath, err)
-	}
+	fmt.Printf("wrote %s\n", layoutPath)
 	return nil
 }
 

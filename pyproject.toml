@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "kubed"
-version = "2.3.0"
-description = "CLI and context tooling for Kubernetes, Docker, Terraform, and Helm — agent-friendly infra layout index plus shell completions and aliases"
+version = "2.3.1"
+description = "97% fewer tokens for AI agents to understand infra — layout index for Kubernetes, Docker, Terraform, Helm plus shell completions"
 readme = "README.md"
 requires-python = ">=3.6"
 license = {text = "MIT"}
@@ -41,6 +41,7 @@ Homepage = "https://cmds.daleyarborough.com"
 Repository = "https://github.com/dalefrieswthat/kubed.git"
 
 [project.scripts]
+kubed = "kubed.main:cli"
 kubed-setup = "kubed.cli:setup_command"
 kubed-completions-path = "kubed.cli:completions_path_command"
 kubed-aliases-path = "kubed.cli:aliases_path_command"

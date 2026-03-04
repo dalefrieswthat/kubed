@@ -46,6 +46,7 @@ docs/plans/
 CLAUDE.md
 
 # === Local / accidental ===
+.kubed/
 *.local
 *.log
 # Directory named ~ (home symlink or similar)

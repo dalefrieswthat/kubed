@@ -1,9 +1,17 @@
 # Kubed
 
-CLI and context tooling for Kubernetes, Docker, Terraform, and Helm. Agent-friendly infra layout index (`.kubed/layout.json`) so tools don't need to run `kubectl` for discovery, plus shell completions and aliases to keep you in flow.
+**97% fewer tokens for AI agents to understand your infrastructure.**
 
-- **Docs site:** [cmds.daleyarborough.com](https://cmds.daleyarborough.com)
-- **Layout index:** `kubed layout capture` writes `.kubed/layout.json` from your current kube context; `kubed layout show` prints it. Agents read one file instead of many `kubectl` calls. Schema: [docs/LAYOUT_SCHEMA.md](docs/LAYOUT_SCHEMA.md).
+CLI and context tooling for Kubernetes, Docker, Terraform, and Helm. Kubed writes a single `.kubed/layout.json` that captures your entire infra layout—Dockerfiles, Terraform, Helm charts, K8s resources, project structure, and cross-repo shared infra. Agents read one ~1,500-token file instead of running 10+ discovery commands that consume 50,000+ tokens.
+
+| Without Kubed | With Kubed |
+|---------------|------------|
+| ~50,000+ tokens | ~1,500 tokens |
+| 10+ tool calls | 1 file read |
+| Repeated discovery | Snapshot-based |
+
+- **Docs:** [cmds.daleyarborough.com](https://cmds.daleyarborough.com)
+- **Layout index:** `kubed layout capture` writes `.kubed/layout.json`; `kubed layout show` prints it. Schema: [docs/LAYOUT_SCHEMA.md](docs/LAYOUT_SCHEMA.md).
 
 ## Installation (Python package)
 
@@ -26,7 +34,7 @@ make build   # outputs build/kubed
 - **`kubed layout capture`** — Connect to current kube context; index Deployments, Services, ConfigMaps, Secrets and their relationships; write `.kubed/layout.json` (or `~/.kubed/layout.json` if not in a git repo). Optional: `--all-namespaces`.
 - **`kubed layout show`** — Print `layout.json` to stdout. If missing, prints "run kubed layout capture" and exits 1.
 
-Use `.kubed/layout.json` for infra layout; run `kubed layout capture` after cluster changes.
+Use `.kubed/layout.json` for infra layout; run `kubed layout capture` after cluster changes. *This repo does not use Kubernetes; we validate layout with `make test` (fixture-based agent-query tests).*
 
 ## Development: test before pushing
 
