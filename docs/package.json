@@ -1,0 +1,31 @@
+{
+  "name": "kubed-docs",
+  "version": "1.0.0",
+  "description": "Documentation for the Kubed CLI tool",
+  "main": "index.js",
+  "scripts": {
+    "build:css": "postcss ./assets/css/main.css -o ./assets/css/style.css",
+    "watch:css": "postcss ./assets/css/main.css -o ./assets/css/style.css --watch",
+    "build": "bundle exec jekyll build",
+    "serve": "bundle exec jekyll serve",
+    "dev": "concurrently \"npm run watch:css\" \"npm run serve\""
+  },
+  "keywords": [
+    "kubed",
+    "documentation",
+    "docker",
+    "kubernetes",
+    "terraform",
+    "helm"
+  ],
+  "author": "Dale Yarborough",
+  "license": "MIT",
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.9",
+    "autoprefixer": "^10.4.14",
+    "concurrently": "^8.0.1",
+    "postcss": "^8.4.24",
+    "postcss-cli": "^10.1.0",
+    "tailwindcss": "^3.3.2"
+  }
+} 

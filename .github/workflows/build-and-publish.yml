@@ -1,0 +1,61 @@
+name: Build and Publish
+
+on:
+  push:
+    branches: [ main ]
+    tags:
+      - 'v*'
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install build twine
+
+    - name: Build package
+      run: python -m build
+
+    - name: List dist contents
+      run: ls -la dist/
+
+    - name: Check built packages
+      run: python -m twine check dist/*
+
+    - name: Publish to PyPI
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        password: ${{ secrets.PYPI_API_TOKEN }}
+
+    - name: Prepare docs for deployment
+      if: github.ref == 'refs/heads/main'
+      run: |
+        mkdir -p site
+        cp -R docs/* site/
+        touch site/.nojekyll
+        echo "cmds.daleyarborough.com" > site/CNAME
+        echo "Documentation prepared for deployment"
+        
+    - name: Deploy to GitHub Pages
+      if: github.ref == 'refs/heads/main'
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        folder: site
+        branch: gh-pages
+        token: ${{ secrets.GITHUB_TOKEN }} 

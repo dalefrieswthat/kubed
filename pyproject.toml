@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kubed"
+version = "2.2.0"
+description = "A CLI tool for managing Kubernetes, Docker, Terraform, and Helm workflows"
+readme = "README.md"
+requires-python = ">=3.6"
+license = {text = "MIT"}
+authors = [
+    {name = "Dale Yarborough", email = "daleyarborough@gmail.com"},
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "click",
+    "rich",
+    "pyyaml",
+    "requests",
+    "docker",
+    "kubernetes",
+    "helm",
+]
+
+[project.urls]
+Homepage = "https://cmds.daleyarborough.com"
+Repository = "https://github.com/dalefrieswthat/kubed.git"
+
+[project.scripts]
+kubed-setup = "kubed.cli:setup_command"
+kubed-completions-path = "kubed.cli:completions_path_command"
+kubed-aliases-path = "kubed.cli:aliases_path_command"
+
+[tool.setuptools]
+packages = ["kubed", "kubed.aliases", "kubed.completions.bash", "kubed.completions.zsh"]
+include-package-data = true 
