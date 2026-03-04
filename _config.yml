@@ -28,11 +28,27 @@ exclude:
   - node_modules
   - vendor
   - .git/
+  - .github/
+  - .cursor/
+  - cursor-context/
   - postcss.config.js
   - package.json
   - package-lock.json
   - tailwind.config.js
   - README.md
+  - Makefile
+  - go.mod
+  - go.sum
+  - "*.go"
+  - cmd/
+  - internal/
+  - build/
+  - docs/
+  - kubed.egg-info/
+  - dist/
+  - venv/
+  - build_env/
+  - test_env/
 
 # Default layout
 defaults:
