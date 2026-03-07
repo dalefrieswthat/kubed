@@ -36,16 +36,71 @@ permalink: /
     AI agents burn thousands of tokens just to understand your infrastructure. Every <code class="px-1.5 py-0.5 rounded bg-zinc-200 font-mono text-sm">kubectl get</code>, <code class="px-1.5 py-0.5 rounded bg-zinc-200 font-mono text-sm">find</code>, and <code class="px-1.5 py-0.5 rounded bg-zinc-200 font-mono text-sm">ls -laR</code> adds latency and cost. Discovery-heavy workflows can push context into the tens of thousands of tokens before the agent answers one question.
   </p>
 
-  <h2 class="text-sm font-semibold text-zinc-600 uppercase tracking-wider mb-4 mt-8">The solution</h2>
+  <h2 class="text-sm font-semibold text-zinc-600 uppercase tracking-wider mb-4 mt-8">The solution: two small files</h2>
+  
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+    <div class="bg-zinc-50 rounded-xl border border-zinc-200 p-5">
+      <h3 class="font-semibold text-zinc-900 mb-2"><code class="px-1.5 py-0.5 rounded bg-zinc-200 font-mono text-sm">.kubed/layout.json</code></h3>
+      <p class="text-sm text-zinc-600 mb-2">Static snapshot of your infrastructure:</p>
+      <ul class="text-sm text-zinc-600 list-disc list-inside space-y-1">
+        <li>Dockerfiles, Terraform, Helm charts</li>
+        <li>Project structure</li>
+        <li>Cross-repo shared infra</li>
+        <li>K8s resources and relationships</li>
+      </ul>
+      <p class="text-xs text-zinc-500 mt-3">Run <code class="px-1 py-0.5 rounded bg-zinc-200 font-mono">kubed layout capture</code> to generate</p>
+    </div>
+    <div class="bg-zinc-50 rounded-xl border border-zinc-200 p-5">
+      <h3 class="font-semibold text-zinc-900 mb-2"><code class="px-1.5 py-0.5 rounded bg-zinc-200 font-mono text-sm">.kubed/learned.json</code></h3>
+      <p class="text-sm text-zinc-600 mb-2">Accumulated knowledge across sessions:</p>
+      <ul class="text-sm text-zinc-600 list-disc list-inside space-y-1">
+        <li>Architecture facts ("API uses PostgreSQL")</li>
+        <li>Important paths with descriptions</li>
+        <li>Tech stack and dependencies</li>
+        <li>Code patterns and conventions</li>
+      </ul>
+      <p class="text-xs text-zinc-500 mt-3">Run <code class="px-1 py-0.5 rounded bg-zinc-200 font-mono">kubed learned add-fact "..."</code> to persist</p>
+    </div>
+  </div>
+
   <p class="text-zinc-600 max-w-2xl mb-4">
-    Kubed writes a single <code class="px-1.5 py-0.5 rounded bg-zinc-200 font-mono text-sm">.kubed/layout.json</code> that captures your entire infrastructure layout: Dockerfiles, Terraform, Helm charts, Kubernetes resources, project structure, and cross-repo shared infra. Agents can read that one file (on the order of ~1,500 tokens) instead of running discovery commands whose output often reaches 50,000+ tokens.
-  </p>
-  <p class="text-zinc-600 max-w-2xl mb-4">
-    The layout is section-based with IDs and tags, so agents can query specific parts (e.g., <code class="px-1.5 py-0.5 rounded bg-zinc-200 font-mono text-sm">"section id=infra_paths"</code>) without loading the entire file.
+    Both files are section-based with IDs and tags, so agents can query specific parts without loading everything. When the agent discovers something useful, it persists it to <code class="px-1.5 py-0.5 rounded bg-zinc-200 font-mono text-sm">learned.json</code> so the next session doesn't re-discover.
   </p>
   <p class="text-zinc-600 max-w-2xl">
     For humans, Kubed installs shell completions and aliases for Docker, Kubernetes, Terraform, and Helm so you stay productive at the terminal.
   </p>
+</section>
+
+<section class="mb-16">
+  <h2 class="text-sm font-semibold text-zinc-600 uppercase tracking-wider mb-4">How it reduces tokens</h2>
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm border border-zinc-200 rounded-lg overflow-hidden">
+      <thead class="bg-zinc-100">
+        <tr>
+          <th class="text-left px-4 py-3 font-semibold text-zinc-700">Without Kubed</th>
+          <th class="text-left px-4 py-3 font-semibold text-zinc-700">With Kubed</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white">
+        <tr class="border-t border-zinc-100">
+          <td class="px-4 py-3 text-zinc-600">Agent runs <code class="px-1 py-0.5 rounded bg-zinc-100 font-mono text-xs">find</code>, <code class="px-1 py-0.5 rounded bg-zinc-100 font-mono text-xs">ls -laR</code>, <code class="px-1 py-0.5 rounded bg-zinc-100 font-mono text-xs">kubectl get</code></td>
+          <td class="px-4 py-3 text-zinc-600">Agent reads <code class="px-1 py-0.5 rounded bg-zinc-100 font-mono text-xs">layout.json</code></td>
+        </tr>
+        <tr class="border-t border-zinc-100">
+          <td class="px-4 py-3 text-zinc-600">Discovery output: 50,000+ tokens</td>
+          <td class="px-4 py-3 text-zinc-600">Layout file: ~1,500–3,000 tokens</td>
+        </tr>
+        <tr class="border-t border-zinc-100">
+          <td class="px-4 py-3 text-zinc-600">Re-discovers same facts every session</td>
+          <td class="px-4 py-3 text-zinc-600">Reads <code class="px-1 py-0.5 rounded bg-zinc-100 font-mono text-xs">learned.json</code> (~500 tokens)</td>
+        </tr>
+        <tr class="border-t border-zinc-100">
+          <td class="px-4 py-3 text-zinc-600">10+ tool calls per question</td>
+          <td class="px-4 py-3 text-zinc-600">1–2 file reads</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </section>
 
 <section class="mb-16">

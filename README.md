@@ -1,18 +1,22 @@
 # Kubed
 
-**One small context file instead of heavy discovery.**
+**Reduce AI agent token usage with two small files.**
 
-CLI and context tooling for Kubernetes, Docker, Terraform, and Helm. Kubed writes a single `.kubed/layout.json` that captures your entire infra layout—Dockerfiles, Terraform, Helm charts, K8s resources, project structure, and cross-repo shared infra. Agents can read that one file (~1,500 tokens) instead of running 10+ discovery commands whose output can reach 50,000+ tokens. Fewer context tokens, faster answers.
+CLI and context tooling for Kubernetes, Docker, Terraform, and Helm. Kubed gives AI agents two lightweight files instead of expensive discovery:
 
-| Without Kubed | With Kubed |
-|---------------|------------|
-| 50,000+ tokens (discovery output) | ~1,500 tokens (one file) |
-| 10+ tool calls | 1 file read |
-| Repeated discovery | Snapshot-based |
+| File | What it stores | Size |
+|------|----------------|------|
+| `.kubed/layout.json` | Infra layout: Dockerfiles, Terraform, Helm, K8s, project structure, shared infra | ~1,500–3,000 tokens |
+| `.kubed/learned.json` | Accumulated knowledge: architecture facts, important paths, dependencies, patterns | ~500 tokens |
+
+**Without Kubed:** Agents run `find`, `ls -laR`, `kubectl get`, `grep -r` → 50,000+ tokens, 10+ tool calls, repeated every session.
+
+**With Kubed:** Agents read two files → ~2,000–3,500 tokens, 1–2 file reads, knowledge persists across sessions.
 
 - **Docs:** [cmds.daleyarborough.com](https://cmds.daleyarborough.com)
-- **Layout index:** `kubed layout capture` writes `.kubed/layout.json`; `kubed layout show` prints it. Schema: [docs/LAYOUT_SCHEMA.md](docs/LAYOUT_SCHEMA.md).
-- **Reducing tokens in Cursor:** [docs/reducing-token-usage.md](docs/reducing-token-usage.md) — use the layout instead of discovery, read one section when possible, narrow @-mentions.
+- **Layout index:** `kubed layout capture` writes `.kubed/layout.json`. Schema: [docs/LAYOUT_SCHEMA.md](docs/LAYOUT_SCHEMA.md).
+- **Learned cache:** `kubed learned add-fact "..."` persists discoveries. Agents read it first to avoid re-discovering.
+- **Reducing tokens:** [docs/reducing-token-usage.md](docs/reducing-token-usage.md)
 
 ## Installation (Python package)
 
