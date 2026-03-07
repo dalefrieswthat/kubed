@@ -18,27 +18,27 @@ permalink: /
 <section class="mb-16">
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
     <div class="bg-white rounded-2xl border border-zinc-200 p-6 text-center shadow-card">
-      <div class="text-4xl font-bold text-accent mb-1">97%</div>
-      <div class="text-sm text-zinc-600">fewer tokens per query</div>
+      <div class="text-4xl font-bold text-accent mb-1">1 file</div>
+      <div class="text-sm text-zinc-600">instead of 10+ discovery calls</div>
     </div>
     <div class="bg-white rounded-2xl border border-zinc-200 p-6 text-center shadow-card">
-      <div class="text-4xl font-bold text-accent mb-1">1</div>
-      <div class="text-sm text-zinc-600">file instead of 10+ tool calls</div>
+      <div class="text-4xl font-bold text-accent mb-1">~1.5K tokens</div>
+      <div class="text-sm text-zinc-600">layout snapshot</div>
     </div>
     <div class="bg-white rounded-2xl border border-zinc-200 p-6 text-center shadow-card">
-      <div class="text-4xl font-bold text-accent mb-1">~1.5K</div>
-      <div class="text-sm text-zinc-600">tokens vs ~50K+ for discovery</div>
+      <div class="text-4xl font-bold text-accent mb-1">vs 50K+</div>
+      <div class="text-sm text-zinc-600">typical discovery output</div>
     </div>
   </div>
 
   <h2 class="text-sm font-semibold text-zinc-600 uppercase tracking-wider mb-4">The problem</h2>
   <p class="text-zinc-600 max-w-2xl mb-4">
-    AI agents burn thousands of tokens just to understand your infrastructure. Every <code class="px-1.5 py-0.5 rounded bg-zinc-200 font-mono text-sm">kubectl get</code>, <code class="px-1.5 py-0.5 rounded bg-zinc-200 font-mono text-sm">find</code>, and <code class="px-1.5 py-0.5 rounded bg-zinc-200 font-mono text-sm">ls -laR</code> adds latency and cost. A single workspace exploration can consume 50,000+ tokens before answering one question.
+    AI agents burn thousands of tokens just to understand your infrastructure. Every <code class="px-1.5 py-0.5 rounded bg-zinc-200 font-mono text-sm">kubectl get</code>, <code class="px-1.5 py-0.5 rounded bg-zinc-200 font-mono text-sm">find</code>, and <code class="px-1.5 py-0.5 rounded bg-zinc-200 font-mono text-sm">ls -laR</code> adds latency and cost. Discovery-heavy workflows can push context into the tens of thousands of tokens before the agent answers one question.
   </p>
 
   <h2 class="text-sm font-semibold text-zinc-600 uppercase tracking-wider mb-4 mt-8">The solution</h2>
   <p class="text-zinc-600 max-w-2xl mb-4">
-    Kubed writes a single <code class="px-1.5 py-0.5 rounded bg-zinc-200 font-mono text-sm">.kubed/layout.json</code> that captures your entire infrastructure layout: Dockerfiles, Terraform, Helm charts, Kubernetes resources, project structure, and cross-repo shared infra. Agents read one ~1,500-token file instead of running discovery commands.
+    Kubed writes a single <code class="px-1.5 py-0.5 rounded bg-zinc-200 font-mono text-sm">.kubed/layout.json</code> that captures your entire infrastructure layout: Dockerfiles, Terraform, Helm charts, Kubernetes resources, project structure, and cross-repo shared infra. Agents can read that one file (on the order of ~1,500 tokens) instead of running discovery commands whose output often reaches 50,000+ tokens.
   </p>
   <p class="text-zinc-600 max-w-2xl mb-4">
     The layout is section-based with IDs and tags, so agents can query specific parts (e.g., <code class="px-1.5 py-0.5 rounded bg-zinc-200 font-mono text-sm">"section id=infra_paths"</code>) without loading the entire file.

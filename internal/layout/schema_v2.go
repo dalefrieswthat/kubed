@@ -67,3 +67,56 @@ type SharedInfraRef struct {
 type SharedInfraPayload struct {
 	Refs []SharedInfraRef `json:"refs"`
 }
+
+// =============================================================================
+// Knowledge Cache schema (.kubed/learned.json)
+// Accumulated knowledge from agent exploration, persists across sessions.
+// =============================================================================
+
+// LearnedCache is the root schema for .kubed/learned.json.
+// Agents append to this as they discover facts; future queries read it first.
+type LearnedCache struct {
+	Version   string         `json:"version"`    // "v1"
+	UpdatedAt string         `json:"updated_at"` // RFC3339
+	RepoRoot  string         `json:"repo_root,omitempty"`
+	Facts     []LearnedFact  `json:"facts"`      // Discovered facts
+	Paths     []LearnedPath  `json:"paths"`      // Important paths with descriptions
+	Deps      []LearnedDep   `json:"deps"`       // Dependencies/tech stack
+	Patterns  []LearnedPattern `json:"patterns"` // Code patterns and conventions
+}
+
+// LearnedFact is a single piece of discovered knowledge.
+type LearnedFact struct {
+	ID        string   `json:"id"`                  // unique, e.g. "fact-001"
+	Fact      string   `json:"fact"`                // the knowledge, e.g. "API uses PostgreSQL for persistence"
+	Category  string   `json:"category,omitempty"`  // e.g. "architecture", "config", "deployment"
+	Tags      []string `json:"tags,omitempty"`      // for filtering
+	Source    string   `json:"source,omitempty"`    // where this was learned, e.g. "docker-compose.yml"
+	LearnedAt string   `json:"learned_at"`          // RFC3339
+}
+
+// LearnedPath is an important file/directory with a description.
+type LearnedPath struct {
+	Path        string   `json:"path"`
+	Description string   `json:"description"`        // what this path is for
+	Tags        []string `json:"tags,omitempty"`
+	LearnedAt   string   `json:"learned_at"`
+}
+
+// LearnedDep is a discovered dependency or tech stack component.
+type LearnedDep struct {
+	Name      string `json:"name"`               // e.g. "PostgreSQL", "Redis", "React"
+	Kind      string `json:"kind"`               // "database", "cache", "framework", "library", "service"
+	Version   string `json:"version,omitempty"`
+	UsedBy    string `json:"used_by,omitempty"`  // which service/component uses it
+	Source    string `json:"source,omitempty"`   // where discovered
+	LearnedAt string `json:"learned_at"`
+}
+
+// LearnedPattern is a code convention or pattern.
+type LearnedPattern struct {
+	Name        string `json:"name"`        // e.g. "test file location"
+	Pattern     string `json:"pattern"`     // e.g. "tests are in __tests__/ folders"
+	Example     string `json:"example,omitempty"`
+	LearnedAt   string `json:"learned_at"`
+}

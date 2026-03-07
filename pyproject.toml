@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "kubed"
-version = "2.3.1"
-description = "97% fewer tokens for AI agents to understand infra — layout index for Kubernetes, Docker, Terraform, Helm plus shell completions"
+version = "2.4.0"
+description = "One small layout file instead of heavy discovery — agent-friendly infra index for Kubernetes, Docker, Terraform, Helm plus shell completions"
 readme = "README.md"
 requires-python = ">=3.6"
 license = {text = "MIT"}

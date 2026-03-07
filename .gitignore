@@ -30,7 +30,9 @@ __pycache__/
 node_modules/
 
 # === IDE / editor (keep repo CNCF-style, no tool-specific config) ===
-.cursor/
+# Track .cursor/rules for shared agent instructions; ignore other .cursor stuff
+.cursor/*
+!.cursor/rules/
 .idea/
 .vscode/
 *.swp

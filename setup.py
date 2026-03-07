@@ -31,7 +31,7 @@ def post_install():
 if __name__ == "__main__":
     setup(
         name="kubed",
-        version="2.3.1",
+        version="2.4.0",
         packages=find_packages(),
         include_package_data=True,
         install_requires=[
@@ -54,7 +54,7 @@ if __name__ == "__main__":
         },
         author="Dale Yarborough",
         author_email="daleyarborough@gmail.com",
-        description="97% fewer tokens for AI agents to understand infra — layout index for Kubernetes, Docker, Terraform, Helm plus shell completions",
+        description="One small layout file instead of heavy discovery — agent-friendly infra index for Kubernetes, Docker, Terraform, Helm plus shell completions",
         long_description=open("README.md").read(),
         long_description_content_type="text/markdown",
         url="https://cmds.daleyarborough.com",

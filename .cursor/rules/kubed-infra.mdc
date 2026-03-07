@@ -1,0 +1,68 @@
+---
+description: "Use .kubed/layout.json for infra/structure questions. Use .kubed/learned.json for accumulated knowledge. Do not run find, ls -laR, or kubectl for discovery."
+globs: ["**/.kubed/**", "**/cursor-context/**", "**/kubed/**", "**/*.tf", "**/Dockerfile*", "**/docker-compose*", "**/Chart.yaml"]
+---
+
+# Kubed: reduce tokens via layout and learned cache
+
+## 1. Layout first (static snapshot)
+
+For questions about infrastructure, project structure, "what exists", "where is X", or "what services/terraform/helm do we have":
+
+1. **Read `.kubed/layout.json`** first. Do **not** run `find`, `ls -laR`, `grep -r`, or `kubectl get ...` for discovery.
+2. **Read only the section you need** by `id`:
+   - `infra_paths` — Dockerfiles, Terraform, Helm, etc.
+   - `project_structure` — top-level dirs and files
+   - `shared_infra` — cross-repo infra directories
+   - `k8s_layout` — Kubernetes resources and relationships
+3. If layout is missing, suggest: `kubed layout capture`
+
+## 2. Learned cache (accumulated knowledge)
+
+`.kubed/learned.json` stores facts, important paths, dependencies, and patterns discovered during previous sessions. **Read this file at the start of infra/architecture questions** to avoid re-discovering the same information.
+
+### Reading learned cache
+
+```bash
+kubed learned show      # full JSON
+kubed learned summary   # quick count
+```
+
+Or read `.kubed/learned.json` directly.
+
+### Writing to learned cache
+
+When you discover something important (architecture decision, key path, dependency, pattern), **persist it** so future sessions don't need to re-discover:
+
+```bash
+# Add a fact
+kubed learned add-fact "API uses PostgreSQL via docker-compose" --category=architecture --source=docker-compose.yml
+
+# Add an important path
+kubed learned add-path "src/api/" "Main API service code" --tags=api,backend
+
+# Add a dependency
+kubed learned add-dep "PostgreSQL" --kind=database --version=15 --used-by=api --source=docker-compose.yml
+```
+
+Or append to `.kubed/learned.json` directly (JSON format).
+
+### What to persist
+
+- **Facts:** Architecture decisions, how services connect, what databases/caches are used
+- **Paths:** Important directories with descriptions (e.g., "src/workers/ — background job processors")
+- **Deps:** Tech stack (databases, frameworks, key libraries with versions)
+- **Patterns:** Code conventions (e.g., "tests live in __tests__/ folders", "config is in .env.* files")
+
+## 3. Context files
+
+Canonical project context is in `cursor-context/` (see `context.yaml`). Prefer those files when the user asks about goals, overview, or architecture.
+
+## 4. When to run discovery
+
+Only run `find`, `grep`, `ls`, or `kubectl` when:
+- The layout and learned cache don't have the answer
+- You need to verify something is still current
+- The user explicitly asks you to search
+
+After discovery, **persist useful findings** to `learned.json` so the next session benefits.

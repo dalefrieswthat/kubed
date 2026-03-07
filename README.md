@@ -1,17 +1,18 @@
 # Kubed
 
-**97% fewer tokens for AI agents to understand your infrastructure.**
+**One small context file instead of heavy discovery.**
 
-CLI and context tooling for Kubernetes, Docker, Terraform, and Helm. Kubed writes a single `.kubed/layout.json` that captures your entire infra layout—Dockerfiles, Terraform, Helm charts, K8s resources, project structure, and cross-repo shared infra. Agents read one ~1,500-token file instead of running 10+ discovery commands that consume 50,000+ tokens.
+CLI and context tooling for Kubernetes, Docker, Terraform, and Helm. Kubed writes a single `.kubed/layout.json` that captures your entire infra layout—Dockerfiles, Terraform, Helm charts, K8s resources, project structure, and cross-repo shared infra. Agents can read that one file (~1,500 tokens) instead of running 10+ discovery commands whose output can reach 50,000+ tokens. Fewer context tokens, faster answers.
 
 | Without Kubed | With Kubed |
 |---------------|------------|
-| ~50,000+ tokens | ~1,500 tokens |
+| 50,000+ tokens (discovery output) | ~1,500 tokens (one file) |
 | 10+ tool calls | 1 file read |
 | Repeated discovery | Snapshot-based |
 
 - **Docs:** [cmds.daleyarborough.com](https://cmds.daleyarborough.com)
 - **Layout index:** `kubed layout capture` writes `.kubed/layout.json`; `kubed layout show` prints it. Schema: [docs/LAYOUT_SCHEMA.md](docs/LAYOUT_SCHEMA.md).
+- **Reducing tokens in Cursor:** [docs/reducing-token-usage.md](docs/reducing-token-usage.md) — use the layout instead of discovery, read one section when possible, narrow @-mentions.
 
 ## Installation (Python package)
 
@@ -31,10 +32,20 @@ make build   # outputs build/kubed
 # or: go build -o build/kubed ./cmd/kubed
 ```
 
-- **`kubed layout capture`** — Connect to current kube context; index Deployments, Services, ConfigMaps, Secrets and their relationships; write `.kubed/layout.json` (or `~/.kubed/layout.json` if not in a git repo). Optional: `--all-namespaces`.
-- **`kubed layout show`** — Print `layout.json` to stdout. If missing, prints "run kubed layout capture" and exits 1.
+- **`kubed layout capture`** — Index infra paths, project structure, shared infra, and (optionally) K8s resources; write `.kubed/layout.json`. Optional: `--all-namespaces`.
+- **`kubed layout show`** — Print `layout.json` to stdout.
 
-Use `.kubed/layout.json` for infra layout; run `kubed layout capture` after cluster changes. *This repo does not use Kubernetes; we validate layout with `make test` (fixture-based agent-query tests).*
+### Learned cache (accumulated knowledge)
+
+- **`kubed learned show`** — Print `.kubed/learned.json` (facts, paths, deps, patterns accumulated across sessions).
+- **`kubed learned summary`** — Quick summary: "3 facts, 2 paths, 5 deps, 1 patterns".
+- **`kubed learned add-fact "fact" [--category=X] [--source=Y]`** — Add a discovered fact.
+- **`kubed learned add-path "/path" "description" [--tags=a,b]`** — Add an important path.
+- **`kubed learned add-dep "name" [--kind=X] [--version=Y]`** — Add a dependency.
+
+Agents read `learned.json` first to avoid re-discovering the same things. When the agent learns something useful (architecture, dependencies, patterns), it persists it so future sessions benefit.
+
+*This repo does not use Kubernetes; we validate layout with `make test` (fixture-based agent-query tests).*
 
 ## Development: test before pushing
 
